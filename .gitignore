@@ -425,3 +425,4 @@ fabric.properties
 *.AssemblyInfo.cs
 *.xml
 *.env
+*.exe
