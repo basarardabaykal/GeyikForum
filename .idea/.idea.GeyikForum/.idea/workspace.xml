@@ -9,7 +9,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d84e0c38-28d0-449d-9641-42bfd281cf1c" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.GeyikForum/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GeyikForum/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/CoreLayer/Entities/Post.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/CoreLayer/Entities/Post.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Backend/DataLayer/AppDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Backend/DataLayer/AppDbContext.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,6 +27,9 @@
   &quot;associatedIndex&quot;: 0
 }</component>
   <component name="ProjectId" id="30uAPqBxorUG2wpJekWjfvGxim8" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -35,12 +39,14 @@
     &quot;.NET Launch Settings Profile.PresentationLayer: http.executor&quot;: &quot;Run&quot;,
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
@@ -84,6 +90,7 @@
       <option name="presentableId" value="Default" />
       <updated>1754467063632</updated>
       <workItem from="1754467064952" duration="1698000" />
+      <workItem from="1754470394179" duration="5495000" />
     </task>
     <servers />
   </component>
