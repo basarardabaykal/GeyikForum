@@ -98,11 +98,11 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
         {
             builder.Entity(entityType.ClrType)
                    .Property<DateTime>("CreatedAt")
-                   .HasDefaultValueSql("GETUTCDATE()");
+                   .HasDefaultValueSql("CURRENT_TIMESTAMP");
                    
             builder.Entity(entityType.ClrType)
                    .Property<DateTime>("UpdatedAt")
-                   .HasDefaultValueSql("GETUTCDATE()");
+                   .HasDefaultValueSql("CURRENT_TIMESTAMP");
         }
     }
     public override int SaveChanges()
