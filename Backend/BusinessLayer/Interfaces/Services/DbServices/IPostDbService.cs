@@ -1,6 +1,9 @@
+using BusinessLayer.Dtos;
+using CoreLayer.Entities;
+
 namespace BusinessLayer.Interfaces.Services.DbServices;
 
-public interface IPostDbService
+public interface IPostDbService : IGenericDbService<PostDto,  Post>
 {
     
 }
