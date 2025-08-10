@@ -8,6 +8,7 @@ using BusinessLayer.Services.DbServices;
 using CoreLayer.Entities;
 using DataLayer;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 using DotNetEnv;
 
 //env
@@ -31,13 +32,13 @@ builder.Services.AddScoped(typeof(IPostControllerService), typeof(PostController
 //automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-//api test
+//builder api test
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+//app api test
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -45,5 +46,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapControllers();
 
 app.Run();
