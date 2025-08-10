@@ -6,7 +6,7 @@ using CoreLayer.Entities;
 
 namespace BusinessLayer.Services.DbServices;
 
-public class PostDbService : IGenericDbService<PostDto, Post>, IPostDbService
+public class PostDbService : GenericDbService<PostDto, Post>, IPostDbService
 {
   public PostDbService(IGenericRepository<Post> repository, IMapper mapper) : base(repository, mapper) {}
     

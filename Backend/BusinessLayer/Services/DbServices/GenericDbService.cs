@@ -18,10 +18,10 @@ public class GenericDbService<TDto, TEntity> : IGenericDbService<TDto>
     }
     public async Task<IDataResult<List<TDto>>> GetAll()
     {
-        var result = _repository.GetAll();
+        var result = await _repository.GetAll();
         if (!result.Success)
         {
-            return result;
+            return new ErrorDataResult<List<TDto>>(result.StatusCode,  result.Message);
         }
 
         var dtoList = _mapper.Map<List<TDto>>(result.Data);

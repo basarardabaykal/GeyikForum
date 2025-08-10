@@ -3,7 +3,7 @@ using CoreLayer.Entities;
 
 namespace BusinessLayer.Interfaces.Services.DbServices;
 
-public interface IPostDbService : IGenericDbService<PostDto,  Post>
+public interface IPostDbService : IGenericDbService<PostDto>
 {
     
 }
