@@ -1,6 +1,8 @@
+using CoreLayer.Entities;
+
 namespace BusinessLayer.Interfaces.Repositories;
 
-public interface IPostRepository
+public interface IPostRepository : IGenericRepository<Post>
 {
     
 }
