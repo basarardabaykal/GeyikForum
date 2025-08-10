@@ -1,6 +1,16 @@
+import { useEffect } from 'react'
 import './App.css'
+import { postService } from './services/postService'
 
 function App() {
+
+  useEffect(() => {
+    const fetchPosts = () => {
+      postService.getAll()
+    }
+
+    fetchPosts()
+  }, [])
 
   return (
     <>
