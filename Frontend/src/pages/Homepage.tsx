@@ -1,15 +1,20 @@
 import { useEffect, useState } from "react"
 import { postService } from "../services/postService"
+import type { Post } from "../models/Post"
 
 export default function Homepage() {
-  const [posts, setPosts] = useState()
+  const [posts, setPosts] = useState<Post[]>([])
+
+  const fetchPosts = async () => {
+    const response = await postService.getAll()
+    if (response.data.success) {
+      const mappedPosts = response.data.data
+      console.log(mappedPosts)
+      setPosts(mappedPosts)
+    }
+  }
 
   useEffect(() => {
-    const fetchPosts = () => {
-
-      const posts = postService.getAll()
-    }
-
     fetchPosts()
   }, [])
 
