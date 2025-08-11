@@ -4,6 +4,7 @@ export interface Post {
     parentId: string | null; //null for main posts
     depth: number;
     title: string | null; //null for comments
+    content: string;
     voteScore: number;
     commentCount: number;
     isPinned: boolean;
