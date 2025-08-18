@@ -21,7 +21,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where  TEn
         try
         {
             var result = await _dbSet.ToListAsync();
-            return new SuccessDataResult<List<TEntity>>("All posts retrieved successfully.", result);
+            return new SuccessDataResult<List<TEntity>>("All items retrieved successfully.", result);
         }
         catch (Exception e)
         {
