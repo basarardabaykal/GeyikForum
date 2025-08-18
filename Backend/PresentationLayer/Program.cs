@@ -40,12 +40,18 @@ builder.Services.AddScoped(typeof(IGenericControllerService<PostDto>), typeof(Po
 builder.Services.AddScoped(typeof(IGenericRepository<AppUser>), typeof(UserRepository));
 builder.Services.AddScoped(typeof(IGenericDbService<AppUserDto>), typeof(UserDbService));
 builder.Services.AddScoped(typeof(IGenericControllerService<AppUserDto>), typeof(UserControllerService));
+builder.Services.AddScoped(typeof(IGenericRepository<PostVote>), typeof(PostVoteRepository));
+builder.Services.AddScoped(typeof(IGenericDbService<PostVoteDto>),  typeof(PostVoteDbService));
+builder.Services.AddScoped(typeof(IGenericControllerService<PostVoteDto>), typeof(PostVoteControllerService));
 builder.Services.AddScoped(typeof(IPostRepository), typeof(PostRepository));
 builder.Services.AddScoped(typeof(IPostDbService), typeof(PostDbService));
 builder.Services.AddScoped(typeof(IPostControllerService), typeof(PostControllerService));
 builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 builder.Services.AddScoped(typeof(IUserDbService), typeof(UserDbService));
 builder.Services.AddScoped(typeof(IUserControllerService), typeof(UserControllerService));
+builder.Services.AddScoped(typeof(IPostVoteControllerService),  typeof(PostVoteControllerService));
+builder.Services.AddScoped(typeof(IPostVoteDbService),  typeof(PostVoteDbService));
+builder.Services.AddScoped(typeof(IPostControllerService), typeof(PostControllerService));
 
 //automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

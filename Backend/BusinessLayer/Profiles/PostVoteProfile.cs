@@ -4,9 +4,9 @@ using CoreLayer.Entities;
 
 namespace BusinessLayer.Profiles;
 
-public class PostVote : Profile
+public class PostVoteProfile : Profile
 {
-  public PostVote()
+  public PostVoteProfile()
   {
     CreateMap<PostVote, PostVoteDto>()
       .ReverseMap();
