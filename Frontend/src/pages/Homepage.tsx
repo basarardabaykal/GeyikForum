@@ -5,11 +5,14 @@ import type { User } from "../models/User"
 import PostItem from "../components/PostItem"
 import { MessageCircle } from "lucide-react"
 import { userService } from "../services/userService"
+import type { PostVote } from "../models/PostVote"
+import { postVoteService } from "../services/postVoteService"
 
 
 export default function Homepage() {
   const [posts, setPosts] = useState<Post[]>([])
   const [users, setUsers] = useState<User[]>([])
+  const [postVotes, setPostVotes] = useState<PostVote[]>([])
   const [loading, setLoading] = useState<boolean>(true)
 
   const fetchUsers = async () => {
@@ -22,6 +25,19 @@ export default function Homepage() {
       }
     } catch (error) {
       console.error('Error fetching users:', error)
+    }
+  }
+
+  const fetchPostVotes = async (): Promise<void> => {
+    try {
+      const response = await postVoteService.getAll()
+      if (response.data.success) {
+        const mappedPostVotes: PostVote[] = response.data.data
+        console.log(mappedPostVotes)
+        setPostVotes(mappedPostVotes)
+      }
+    } catch (error) {
+      console.error('Error fetching post votes:', error)
     }
   }
 
@@ -38,6 +54,14 @@ export default function Homepage() {
     }
   }
 
+  const getUserNickname = (userId: string): string => {
+    const user = users.find(u => {
+      return u.id === userId
+    })
+
+    return user?.nickname || "anon"
+  }
+
   const handleVote = (postId: string, change: number): void => { //update backend votes here later.
     setPosts(prevPosts =>
       prevPosts.map(post =>
@@ -48,18 +72,10 @@ export default function Homepage() {
     )
   }
 
-  const getUserNickname = (userId: string): string => {
-    const user = users.find(u => {
-      return u.id === userId
-    })
-
-    return user?.nickname || "anon"
-  }
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await Promise.all([fetchUsers(), fetchPosts()])
+        await Promise.all([fetchUsers(), fetchPostVotes(), fetchPosts()])
       } catch (error) {
         console.error('Error fetching data:', error)
       } finally {
