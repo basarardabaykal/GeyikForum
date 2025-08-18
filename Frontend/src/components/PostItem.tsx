@@ -7,9 +7,10 @@ interface PostItemProps {
   post: Post;
   posts: Post[];
   onVote: (postId: string, change: number) => void;
+  getUserNickname: (userId: string) => string;
 }
 
-export default function PostItem({ post, posts, onVote }: PostItemProps) {
+export default function PostItem({ post, posts, onVote, getUserNickname }: PostItemProps) {
   const isMainPost = post.parentId === null
   const replies = posts.filter(p => p.parentId === post.id).sort((a, b) => b.voteScore - a.voteScore)
 
@@ -31,7 +32,7 @@ export default function PostItem({ post, posts, onVote }: PostItemProps) {
           <div className="flex items-center gap-2 mb-2">
             {post.isPinned && <Pin size={16} className="text-green-600" />}
             <span className="text-sm text-gray-600">
-              u/anon
+              u/{getUserNickname(post.userId)}
             </span>
             {post.isEdited && (
               <span className="flex items-center gap-1 text-xs text-gray-500">
@@ -70,6 +71,7 @@ export default function PostItem({ post, posts, onVote }: PostItemProps) {
           post={reply}
           posts={posts}
           onVote={onVote}
+          getUserNickname={getUserNickname}
         />
       ))}
     </div>

@@ -22,8 +22,6 @@ export default function Homepage() {
       }
     } catch (error) {
       console.error('Error fetching users:', error)
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -37,8 +35,6 @@ export default function Homepage() {
       }
     } catch (error) {
       console.error('Error fetching posts:', error)
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -52,9 +48,26 @@ export default function Homepage() {
     )
   }
 
+  const getUserNickname = (userId: string): string => {
+    const user = users.find(u => {
+      return u.id === userId
+    })
+
+    return user?.nickname || "anon"
+  }
+
   useEffect(() => {
-    fetchUsers()
-    fetchPosts()
+    const fetchData = async () => {
+      try {
+        await Promise.all([fetchUsers(), fetchPosts()])
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
   }, [])
 
   const mainPosts: Post[] = posts
@@ -99,6 +112,7 @@ export default function Homepage() {
                 post={post}
                 posts={posts}
                 onVote={handleVote}
+                getUserNickname={getUserNickname}
               />
             ))}
           </div>
