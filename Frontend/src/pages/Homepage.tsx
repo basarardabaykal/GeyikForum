@@ -1,13 +1,31 @@
 import { useEffect, useState } from "react"
 import { postService } from "../services/postService"
 import type { Post } from "../models/Post"
+import type { User } from "../models/User"
 import PostItem from "../components/PostItem"
 import { MessageCircle } from "lucide-react"
+import { userService } from "../services/userService"
 
 
 export default function Homepage() {
   const [posts, setPosts] = useState<Post[]>([])
+  const [users, setUsers] = useState<User[]>([])
   const [loading, setLoading] = useState<boolean>(true)
+
+  const fetchUsers = async () => {
+    try {
+      const response = await userService.getAll()
+      if (response.data.success) {
+        const mappedUsers: User[] = response.data.data
+        console.log(mappedUsers)
+        setUsers(mappedUsers)
+      }
+    } catch (error) {
+      console.error('Error fetching users:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const fetchPosts = async (): Promise<void> => {
     try {
@@ -35,6 +53,7 @@ export default function Homepage() {
   }
 
   useEffect(() => {
+    fetchUsers()
     fetchPosts()
   }, [])
 
