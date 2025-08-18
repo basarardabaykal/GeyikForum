@@ -1,9 +1,9 @@
 export interface User {
-    Id: string;
-    Email: string;
-    Nickname: string;
-    Karma: number;
-    IsAdmin: boolean;
-    IsModerator: boolean;
-    IsBanned: boolean;
+    id: string;
+    email: string;
+    nickname: string;
+    karma: number;
+    isAdmin: boolean;
+    isModerator: boolean;
+    isBanned: boolean;
 }
