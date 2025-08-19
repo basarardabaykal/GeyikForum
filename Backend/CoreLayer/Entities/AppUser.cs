@@ -11,7 +11,7 @@ public class AppUser : IdentityUser<Guid>, IBaseEntity
     public bool IsBanned { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
-    public virtual ICollection<Post> Posts { get; set; }
+    public virtual ICollection<Post> Posts { get; set; } =  new List<Post>();
     public virtual ICollection<PostVote> Votes { get; set; } = new List<PostVote>();
-    public virtual ICollection<PreviousNickname> PreviousNicknames { get; set; }
+    public virtual ICollection<PreviousNickname> PreviousNicknames { get; set; } =  new List<PreviousNickname>();
 }
