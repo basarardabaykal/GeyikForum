@@ -1,3 +1,4 @@
+using System.Text;
 using BusinessLayer.Dtos;
 using BusinessLayer.Interfaces.Repositories;
 using BusinessLayer.Interfaces.Services.ControllerServices;
@@ -10,6 +11,9 @@ using DataLayer;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using DotNetEnv;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 //env
 DotNetEnv.Env.Load();
@@ -34,6 +38,17 @@ builder.Services.AddControllers();
 //dependency injection
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddIdentityCore<AppUser>(options =>
+    {
+        options.Password.RequireDigit = true;
+        options.Password.RequiredLength = 6;
+        options.User.RequireUniqueEmail = true;
+    })
+    .AddRoles<IdentityRole<Guid>>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
 builder.Services.AddScoped(typeof(IGenericRepository<Post>), typeof(PostRepository));
 builder.Services.AddScoped(typeof(IGenericDbService<PostDto>), typeof(PostDbService));
 builder.Services.AddScoped(typeof(IGenericControllerService<PostDto>), typeof(PostControllerService));
@@ -52,9 +67,28 @@ builder.Services.AddScoped(typeof(IUserControllerService), typeof(UserController
 builder.Services.AddScoped(typeof(IPostVoteControllerService),  typeof(PostVoteControllerService));
 builder.Services.AddScoped(typeof(IPostVoteDbService),  typeof(PostVoteDbService));
 builder.Services.AddScoped(typeof(IPostControllerService), typeof(PostControllerService));
+builder.Services.AddScoped(typeof(IAuthRepository), typeof(AuthRepository));
+builder.Services.AddScoped(typeof(IAuthDbService), typeof(AuthDbService));
+builder.Services.AddScoped(typeof(IAuthControllerService), typeof(AuthControllerService));
 
 //automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+//authentication
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        };
+    });
 
 //builder api test
 builder.Services.AddEndpointsApiExplorer();
@@ -73,6 +107,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
