@@ -6,7 +6,7 @@ public class PreviousNickname : IBaseEntity
     public Guid UserId { get; set; }
     public string Nickname { get; set; }
     public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
     
     public virtual AppUser User { get; set; }
 }

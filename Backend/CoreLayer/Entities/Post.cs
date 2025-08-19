@@ -12,7 +12,7 @@ public class Post : IBaseEntity
     public int CommentCount { get; set; }
     public int Depth { get; set; }
     public DateTime CreatedAt { get; set; }
-    public DateTime UpdatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
     public bool IsEdited { get; set; }
     public bool IsDeleted { get; set; }
     
