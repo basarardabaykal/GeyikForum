@@ -9,4 +9,5 @@ public class AppUserDto
     public bool IsAdmin { get; set; }
     public bool IsModerator { get; set; }
     public bool IsBanned { get; set; }
+    public List<string> Roles { get; set; }
 }

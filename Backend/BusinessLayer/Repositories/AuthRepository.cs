@@ -58,4 +58,22 @@ public class AuthRepository : IAuthRepository
     }
   }
   
+  public async Task<IDataResult<List<string>>> GetUserRoles(string email)
+  {
+    try
+    {
+      var user = await _userManager.FindByEmailAsync(email);
+      if (user == null)
+      {
+        return new ErrorDataResult<List<string>>(404, "User not found.");
+      }
+
+      var roles = await _userManager.GetRolesAsync(user);
+      return new SuccessDataResult<List<string>>("User roles retrieved successfully.", roles.ToList());
+    }
+    catch (Exception exception)
+    {
+      return new ErrorDataResult<List<string>>(500, "An unexpected error occurred while retrieving user roles.");
+    }
+  }
 }

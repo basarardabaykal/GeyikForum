@@ -26,13 +26,6 @@ public class AuthControllerService : IAuthControllerService
   
   public async Task<IDataResult<RegisterResponseDto>> Register(RegisterRequestDto registerRequestDto)
   {
-    if (registerRequestDto.ConfirmPassword != registerRequestDto.Password)
-    {
-      return new ErrorDataResult<RegisterResponseDto>(400, "Passwords do not match.");
-    }
-
-    string userName = registerRequestDto.Email;
-
     var result = await _authDbService.Register(registerRequestDto);
     var user = result.Data;
     if (!result.Success)
@@ -40,11 +33,10 @@ public class AuthControllerService : IAuthControllerService
       return new ErrorDataResult<RegisterResponseDto>(result.StatusCode, result.Message);
     }
 
-    //var rolesResult = await _authDbService.GetUserRoles(user.Email);
-    //var roles = rolesResult.Success ? rolesResult.Data : new List<string>();
+    var rolesResult = await _authDbService.GetUserRoles(user.Email);
+    var roles = rolesResult.Success ? rolesResult.Data : new List<string>();
 
-    //var token = GenerateJwtToken(user, roles);
-    var token = GenerateJwtToken(user, []);
+    var token = GenerateJwtToken(user, roles);
 
     var data = new RegisterResponseDto
     {
@@ -58,7 +50,7 @@ public class AuthControllerService : IAuthControllerService
         IsAdmin = user.IsAdmin,
         IsModerator = user.IsModerator,
         IsBanned = user.IsBanned,
-        //Roles = roles,
+        Roles = roles,
       },
       Token = token
     };
@@ -77,10 +69,10 @@ public class AuthControllerService : IAuthControllerService
       new(ClaimTypes.Email, user.Email) //can be simplified.
     };
 
-    /*foreach (var role in roles)
+    foreach (var role in roles)
     {
       claims.Add(new Claim(ClaimTypes.Role, role));
-    }*/
+    }
 
     var expiresAt = DateTime.UtcNow.AddMinutes(double.Parse(_configuration["Jwt:ExpiryMinutes"]));
 

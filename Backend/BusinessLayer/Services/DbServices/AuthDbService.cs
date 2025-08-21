@@ -26,6 +26,7 @@ public class AuthDbService : IAuthDbService
 
     var newUser = new AppUser
     {
+      UserName = registerRequestDto.Email,
       Email = registerRequestDto.Email,
       Nickname = registerRequestDto.Nickname,
       Karma = 0,
@@ -42,5 +43,10 @@ public class AuthDbService : IAuthDbService
       //await _authRepository.AssignRole(newUser, role);
     }
     return result;
+  }
+  
+  public async Task<IDataResult<List<string>>> GetUserRoles(string email)
+  {
+    return await _authRepository.GetUserRoles(email);
   }
 }
