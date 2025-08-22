@@ -18,99 +18,70 @@ public class AuthRepository : IAuthRepository
   }
   
   public async Task<IDataResult<AppUser>> GetUserByEmail(string email)
-     {
-       try
-       {
-         var user = await _userManager.FindByEmailAsync(email);
-         if (user == null)
-         {
-           return new ErrorDataResult<AppUser>(404, "No user was found with this email.");
-         }
-         else
-         {
-           return new SuccessDataResult<AppUser>( "User with this email has been found successfully.", user);
-         }
-       }
-       catch (Exception exception)
-       {
-         {
-           return new ErrorDataResult<AppUser>(500, "An unexpected error occurred while looking for a user with this email.");
-         }
-       }
-     }
+  {
+    var user = await _userManager.FindByEmailAsync(email);
+    if (user == null)
+    {
+      return new ErrorDataResult<AppUser>(404, "No user was found with this email.");
+    }
+    else
+    {
+      return new SuccessDataResult<AppUser>( "User with this email has been found successfully.", user);
+    }
+  }
   
   public async Task<IDataResult<AppUser>> CreateUser(AppUser user, string password)
   {
-    try
-    {
-      var result = await _userManager.CreateAsync(user, password);
+    var result = await _userManager.CreateAsync(user, password);
       
-      if (result.Succeeded)
-      {
-        var createdUser = await _userManager.FindByEmailAsync(user.Email);
-        return new SuccessDataResult<AppUser>("User has been created successfully.", createdUser);
-      }
-      else
-      {
-        return new ErrorDataResult<AppUser>(400, "User creation failed.");
-      }
-    }
-    catch (Exception exception)
+    if (result.Succeeded)
     {
-      return new ErrorDataResult<AppUser>(500, "An unexpected error occurred while creating the user.");
+      var createdUser = await _userManager.FindByEmailAsync(user.Email);
+      return new SuccessDataResult<AppUser>("User has been created successfully.", createdUser);
+    }
+    else
+    {
+      return new ErrorDataResult<AppUser>(400, "User creation failed.");
     }
   }
   
   public async Task<IDataResult<List<string>>> GetUserRoles(string email)
   {
-    try
+    var user = await _userManager.FindByEmailAsync(email);
+    if (user == null)
     {
-      var user = await _userManager.FindByEmailAsync(email);
-      if (user == null)
-      {
-        return new ErrorDataResult<List<string>>(404, "User not found.");
-      }
+      return new ErrorDataResult<List<string>>(404, "User not found.");
+    }
 
-      var roles = await _userManager.GetRolesAsync(user);
-      if (roles == null)
-      {
-        return new ErrorDataResult<List<string>>(404, "Roles for this user was not found.");
-      }
-      return new SuccessDataResult<List<string>>("User roles retrieved successfully.", roles.ToList());
-    }
-    catch (Exception exception)
+    var roles = await _userManager.GetRolesAsync(user);
+    if (roles == null)
     {
-      return new ErrorDataResult<List<string>>(500, "An unexpected error occurred while retrieving user roles.");
+      return new ErrorDataResult<List<string>>(404, "Roles for this user was not found.");
     }
+    
+    return new SuccessDataResult<List<string>>("User roles retrieved successfully.", roles.ToList());
   }
   
   public async Task<IDataResult<bool>> AssignRole(AppUser user, string role)
   {
-    try
+    if (!await _roleManager.RoleExistsAsync(role))
     {
-      if (!await _roleManager.RoleExistsAsync(role))
-      {
-        await _roleManager.CreateAsync(new IdentityRole<Guid>(role));
-      }
-
-      if (await _userManager.IsInRoleAsync(user, role))
-      {
-        return new SuccessDataResult<bool>($"User already has role '{role}'.");
-      }
-
-      var result = await _userManager.AddToRoleAsync(user, role);
-      if (result.Succeeded)
-      {
-        return new SuccessDataResult<bool>($"Role '{role}' has been assigned to user successfully.");
-      }
-      else
-      {
-        return new ErrorDataResult<bool>(400, "Role assignment failed.");
-      }
+      await _roleManager.CreateAsync(new IdentityRole<Guid>(role));
     }
-    catch (Exception exception)
+
+    if (await _userManager.IsInRoleAsync(user, role))
     {
-      return new ErrorDataResult<bool>(500, "An unexpected error occurred while assigning role.");
+      return new SuccessDataResult<bool>($"User already has role '{role}'.");
+    }
+
+    var result = await _userManager.AddToRoleAsync(user, role);
+    if (result.Succeeded)
+    {
+      return new SuccessDataResult<bool>($"Role '{role}' has been assigned to user successfully.");
+    }
+    else
+    {
+      return new ErrorDataResult<bool>(400, "Role assignment failed.");
     }
   }
 }

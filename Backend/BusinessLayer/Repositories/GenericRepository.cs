@@ -18,18 +18,7 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where  TEn
     }
     public async Task<IDataResult<List<TEntity>>> GetAll()
     {
-        try
-        {
-            var result = await _dbSet.ToListAsync();
-            return new SuccessDataResult<List<TEntity>>("All items retrieved successfully.", result);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return new ErrorDataResult<List<TEntity>>(500, "Error while retrieving all items from the database.");
-        }
-        
-        
+      var result = await _dbSet.ToListAsync();
+      return new SuccessDataResult<List<TEntity>>("All items retrieved successfully.", result);
     }
-    
 }
