@@ -14,6 +14,7 @@ using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using PresentationLayer.Middlewares;
 
 //env
 DotNetEnv.Env.Load();
@@ -94,6 +95,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+//global exception handler
+app.UseMiddleware <GlobalExceptionHandlerMiddleware>();
 
 //cors
 app.UseCors("AllowAll");

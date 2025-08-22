@@ -26,6 +26,7 @@ public class AuthControllerService : IAuthControllerService
   
   public async Task<IDataResult<RegisterResponseDto>> Register(RegisterRequestDto registerRequestDto)
   {
+    throw new Exception("şkfşidjasga");
     var result = await _authDbService.Register(registerRequestDto);
     var user = result.Data;
     if (!result.Success)
