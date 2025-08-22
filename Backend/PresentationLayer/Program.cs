@@ -39,13 +39,12 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddIdentityCore<AppUser>(options =>
+builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
     {
         options.Password.RequireDigit = true;
         options.Password.RequiredLength = 6;
         options.User.RequireUniqueEmail = true;
     })
-    .AddRoles<IdentityRole<Guid>>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
@@ -66,7 +65,7 @@ builder.Services.AddScoped(typeof(IUserDbService), typeof(UserDbService));
 builder.Services.AddScoped(typeof(IUserControllerService), typeof(UserControllerService));
 builder.Services.AddScoped(typeof(IPostVoteControllerService),  typeof(PostVoteControllerService));
 builder.Services.AddScoped(typeof(IPostVoteDbService),  typeof(PostVoteDbService));
-builder.Services.AddScoped(typeof(IPostControllerService), typeof(PostControllerService));
+builder.Services.AddScoped(typeof(IPostVoteControllerService), typeof(PostVoteControllerService));
 builder.Services.AddScoped(typeof(IAuthRepository), typeof(AuthRepository));
 builder.Services.AddScoped(typeof(IAuthDbService), typeof(AuthDbService));
 builder.Services.AddScoped(typeof(IAuthControllerService), typeof(AuthControllerService));
