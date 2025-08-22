@@ -4,16 +4,19 @@ using BusinessLayer.Interfaces.Services.DbServices;
 using CoreLayer.Entities;
 using CoreLayer.Utilities.DataResults.Concretes;
 using CoreLayer.Utilities.DataResults.Interfaces;
+using Microsoft.Extensions.Configuration;
 
 namespace BusinessLayer.Services.DbServices;
 
 public class AuthDbService : IAuthDbService
 {
   private readonly IAuthRepository  _authRepository;
+  private readonly string _defaultRole;
 
-  public AuthDbService(IAuthRepository authRepository)
+  public AuthDbService(IAuthRepository authRepository, IConfiguration configuration)
   {
     _authRepository = authRepository;
+    _defaultRole = configuration.GetValue<string>("DefaultRole") ?? "User";
   }
   
   public async Task<IDataResult<AppUser>> Register(RegisterRequestDto registerRequestDto)
@@ -23,7 +26,7 @@ public class AuthDbService : IAuthDbService
     {
       return new ErrorDataResult<AppUser>(400, "User with this email already exists.");
     }
-
+    
     var newUser = new AppUser
     {
       UserName = registerRequestDto.Email,
@@ -40,7 +43,7 @@ public class AuthDbService : IAuthDbService
     var result = await _authRepository.CreateUser(newUser, registerRequestDto.Password);
     if (result.Success)
     {
-      //await _authRepository.AssignRole(newUser, role);
+      await _authRepository.AssignRole(newUser, _defaultRole);
     }
     return result;
   }

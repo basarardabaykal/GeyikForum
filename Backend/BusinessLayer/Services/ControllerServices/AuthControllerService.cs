@@ -32,15 +32,14 @@ public class AuthControllerService : IAuthControllerService
     {
       return new ErrorDataResult<RegisterResponseDto>(result.StatusCode, result.Message);
     }
-
-    var rolesResult = await _authDbService.GetUserRoles(user.Email);
+    
+    var rolesResult = await _authDbService.GetUserRoles(user.Email);  
     var roles = rolesResult.Success ? rolesResult.Data : new List<string>();
 
     var token = GenerateJwtToken(user, roles);
 
     var data = new RegisterResponseDto
     {
-      Message = result.Message,
       UserDto = new AppUserDto()
       {
         Id = user.Id,
@@ -55,7 +54,7 @@ public class AuthControllerService : IAuthControllerService
       Token = token
     };
 
-    return new SuccessDataResult<RegisterResponseDto>("User created successfully.", data);
+    return new SuccessDataResult<RegisterResponseDto>(result.Message, data);
   }
   private string GenerateJwtToken(AppUser user, List<string> roles)
   {

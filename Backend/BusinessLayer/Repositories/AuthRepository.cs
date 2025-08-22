@@ -9,10 +9,12 @@ namespace BusinessLayer.Repositories;
 public class AuthRepository : IAuthRepository
 {
   private readonly UserManager<AppUser> _userManager;
+  private readonly RoleManager<IdentityRole<Guid>> _roleManager;
 
-  public AuthRepository(UserManager<AppUser> userManager)
+  public AuthRepository(UserManager<AppUser> userManager , RoleManager<IdentityRole<Guid>> roleManager)
   {
     _userManager = userManager;
+    _roleManager = roleManager;
   }
   
   public async Task<IDataResult<AppUser>> GetUserByEmail(string email)
@@ -22,7 +24,7 @@ public class AuthRepository : IAuthRepository
          var user = await _userManager.FindByEmailAsync(email);
          if (user == null)
          {
-           throw new Exception("No user was found with this email.");
+           return new ErrorDataResult<AppUser>(404, "No user was found with this email.");
          }
          else
          {
@@ -42,10 +44,11 @@ public class AuthRepository : IAuthRepository
     try
     {
       var result = await _userManager.CreateAsync(user, password);
-
+      
       if (result.Succeeded)
       {
-        return new SuccessDataResult<AppUser>("User has been created successfully.", user);
+        var createdUser = await _userManager.FindByEmailAsync(user.Email);
+        return new SuccessDataResult<AppUser>("User has been created successfully.", createdUser);
       }
       else
       {
@@ -69,11 +72,45 @@ public class AuthRepository : IAuthRepository
       }
 
       var roles = await _userManager.GetRolesAsync(user);
+      if (roles == null)
+      {
+        return new ErrorDataResult<List<string>>(404, "Roles for this user was not found.");
+      }
       return new SuccessDataResult<List<string>>("User roles retrieved successfully.", roles.ToList());
     }
     catch (Exception exception)
     {
       return new ErrorDataResult<List<string>>(500, "An unexpected error occurred while retrieving user roles.");
+    }
+  }
+  
+  public async Task<IDataResult<bool>> AssignRole(AppUser user, string role)
+  {
+    try
+    {
+      if (!await _roleManager.RoleExistsAsync(role))
+      {
+        await _roleManager.CreateAsync(new IdentityRole<Guid>(role));
+      }
+
+      if (await _userManager.IsInRoleAsync(user, role))
+      {
+        return new SuccessDataResult<bool>($"User already has role '{role}'.");
+      }
+
+      var result = await _userManager.AddToRoleAsync(user, role);
+      if (result.Succeeded)
+      {
+        return new SuccessDataResult<bool>($"Role '{role}' has been assigned to user successfully.");
+      }
+      else
+      {
+        return new ErrorDataResult<bool>(400, "Role assignment failed.");
+      }
+    }
+    catch (Exception exception)
+    {
+      return new ErrorDataResult<bool>(500, "An unexpected error occurred while assigning role.");
     }
   }
 }
