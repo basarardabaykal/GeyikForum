@@ -22,4 +22,11 @@ public class AuthController : Controller
     var result = await _controllerService.Register(registerRequestDto);
     return StatusCode(result.StatusCode, result);
   }
+
+  [HttpPost("login")]
+  public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
+  {
+    var result = await _controllerService.Login(loginRequestDto);
+    return StatusCode(result.StatusCode, result);
+  }
 }
