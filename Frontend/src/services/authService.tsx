@@ -3,15 +3,26 @@ import { api } from "./api";
 const CONTROLLER_NAME = "auth"
 
 export const authService = {
-    async login(email: string, password: string) {
-        const response = await api.post(`/${CONTROLLER_NAME}/login`, {
-            email,
-            password,
-        })
-        return response
+  async login(email: string, password: string) {
+    const response = await api.post(`/${CONTROLLER_NAME}/login`, {
+      email,
+      password,
+    })
+    return response
+  },
+  async register(data: any) {
+    const response = await api.post(`/${CONTROLLER_NAME}/register`, data)
+    return response
+  },
+  async get(token: string) {
+    const response = await api.post(`/${CONTROLLER_NAME}/get`, {
+      token,
     },
-    async register(data: any) {
-        const response = await api.post(`/${CONTROLLER_NAME}/register`, data)
-        return response
-    },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      })
+    return response
+  }
 }
