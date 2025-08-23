@@ -6,4 +6,5 @@ export interface User {
     isAdmin: boolean;
     isModerator: boolean;
     isBanned: boolean;
+    roles: string[];
 }
