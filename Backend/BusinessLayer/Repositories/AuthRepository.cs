@@ -30,6 +30,19 @@ public class AuthRepository : IAuthRepository
     }
   }
   
+  public async Task<IDataResult<AppUser>> CheckPassword(AppUser user, string password)
+  {
+    var hasMatchedPasswords = await _userManager.CheckPasswordAsync(user, password);
+    if (hasMatchedPasswords)
+    {
+      return new SuccessDataResult<AppUser>("Successfully logged in.", user);
+    }
+    else
+    {
+      return new ErrorDataResult<AppUser>(500, "Password is not correct.", user);
+    }
+  }
+  
   public async Task<IDataResult<AppUser>> CreateUser(AppUser user, string password)
   {
     var result = await _userManager.CreateAsync(user, password);

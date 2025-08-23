@@ -48,6 +48,21 @@ public class AuthDbService : IAuthDbService
     return result;
   }
   
+  public async Task<IDataResult<AppUser>> Login(LoginRequestDto loginRequestDto)
+  {
+    var result = await _authRepository.GetUserByEmail(loginRequestDto.Email);
+    var user = result.Data;
+    
+    if (!result.Success)
+    {
+      return result;
+    }
+
+    else {
+      return await _authRepository.CheckPassword(user, loginRequestDto.Password);
+    }
+  }
+  
   public async Task<IDataResult<List<string>>> GetUserRoles(string email)
   {
     return await _authRepository.GetUserRoles(email);

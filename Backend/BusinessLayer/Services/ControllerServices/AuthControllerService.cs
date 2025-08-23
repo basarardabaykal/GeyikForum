@@ -56,6 +56,41 @@ public class AuthControllerService : IAuthControllerService
 
     return new SuccessDataResult<RegisterResponseDto>(result.Message, data);
   }
+  
+  public async Task<IDataResult<LoginResponseDto>> Login(LoginRequestDto loginDto) 
+  { 
+    var result = await _authDbService.Login(loginDto);
+    var user = result.Data;
+        
+    if (!result.Success)
+    {
+      return new ErrorDataResult<LoginResponseDto>(result.StatusCode, result.Message);
+    }
+
+    var rolesResult = await _authDbService.GetUserRoles(user.Email);
+    var roles = rolesResult.Success ? rolesResult.Data : new List<string>();
+
+    var token = GenerateJwtToken(user, roles);
+
+    var data =  new LoginResponseDto
+    {
+      UserDto = new AppUserDto
+      {   
+        Id = user.Id,
+        Email = user.Email,
+        Nickname = user.Nickname,
+        Karma = user.Karma,
+        IsAdmin = user.IsAdmin,
+        IsModerator = user.IsModerator,
+        IsBanned = user.IsBanned,
+        Roles = roles,
+      },
+      Token = token
+    };
+
+    return new SuccessDataResult<LoginResponseDto>(result.Message, data);
+  }
+  
   private string GenerateJwtToken(AppUser user, List<string> roles)
   {
     var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));

@@ -7,5 +7,6 @@ namespace BusinessLayer.Interfaces.Services.DbServices;
 public interface IAuthDbService
 {
   public Task<IDataResult<AppUser>> Register(RegisterRequestDto registerRequestDto);
+  public Task<IDataResult<AppUser>> Login(LoginRequestDto loginRequestDto);
   public Task<IDataResult<List<string>>> GetUserRoles(string email);
 }
