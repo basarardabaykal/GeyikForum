@@ -19,8 +19,19 @@ import { authService } from "../services/authService";
 
 const signupSchema = z.object({
   email: z.email("Invalid email"),
-  password: z.string().min(6, "Password must have at least 6 characters"),
+  password: z.string()
+    .min(6, "Password must have at least 6 characters.")
+    .max(64, "Password can not have more than 64 characters.")
+    .regex(/[0-9]/, "Password must contain at least one digit.")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter.")
+    .regex(/[a-z]/, "Password must contain at least one lowercase letter.")
+    .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character."),
   confirmedPassword: z.string(),
+  nickname: z.string()
+    .min(3, "Nickname must have at least 3 characters.")
+    .max(20, "Nickname can not have more than 20 characters.")
+    .regex(/^[a-zA-Z0-9_-]+$/, "Nickname can only contain letters, numbers, underscores, or hyphens")
+    .regex(/^(?![_-])(?!.*[_-]{2})(?!.*[_-]$).+$/, "Nickname cannot start/end with or contain consecutive special characters"),
 }).refine((data) => data.password === data.confirmedPassword, {
   message: "Passwords do not match",
   path: ["confirmedPassword"],
