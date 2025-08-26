@@ -80,6 +80,7 @@ builder.Services.AddScoped(typeof(IAuthControllerService), typeof(AuthController
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssembly(typeof(RegisterValidator).Assembly);
+builder.Services.AddValidatorsFromAssembly(typeof(LoginValidator).Assembly);
 
 //automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

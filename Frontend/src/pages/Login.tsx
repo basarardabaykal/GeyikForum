@@ -18,8 +18,8 @@ import { useAuth } from "../context/AuthContext";
 import { authService } from "../services/authService";
 
 const loginSchema = z.object({
-  email: z.email("Invalid email adress"),
-  password: z.string("Invalid password"),
+  email: z.email("Invalid email adress").nonempty("Email Required"),
+  password: z.string("Invalid password").nonempty("Password required."),
 })
 
 export default function Login() {
@@ -52,8 +52,16 @@ export default function Login() {
       navigate("/")
     }
     else {
-      setErrorMessage(response.data.message)
-      setIsError(true);
+      //backend validation errors
+      if (response.data.errors && typeof response.data.errors === "object") {
+        const allErrors = Object.values(response.data.errors).flat() as string[]
+        setErrorMessage(allErrors[0] || "Validation Error")
+      }
+      else {
+        setErrorMessage(response.data.Message)
+      }
+
+      setIsError(true)
     }
 
   }
