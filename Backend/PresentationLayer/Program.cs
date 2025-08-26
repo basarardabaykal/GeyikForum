@@ -13,6 +13,7 @@ using AutoMapper;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PresentationLayer.Middlewares;
 
@@ -35,20 +36,22 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddControllers();
 
-
-//dependency injection
+//db context
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
+//identity options
+builder.Services.AddIdentityCore<AppUser>(options =>
     {
         options.Password.RequireDigit = true;
         options.Password.RequiredLength = 6;
         options.User.RequireUniqueEmail = true;
     })
+    .AddRoles<IdentityRole<Guid>>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+//dependency injection
 builder.Services.AddScoped(typeof(IGenericRepository<Post>), typeof(PostRepository));
 builder.Services.AddScoped(typeof(IGenericDbService<PostDto>), typeof(PostDbService));
 builder.Services.AddScoped(typeof(IGenericControllerService<PostDto>), typeof(PostControllerService));
