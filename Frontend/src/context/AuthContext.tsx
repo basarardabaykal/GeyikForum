@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const response = await authService.get(JSON.stringify(token))
 
         if (!response.data.success) {
-          //toast.error("An unexpected error occured.")
+          //toast.error(response.data.message)
           localStorage.removeItem("token")
         }
 

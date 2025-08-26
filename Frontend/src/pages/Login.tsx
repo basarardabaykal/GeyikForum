@@ -43,29 +43,19 @@ export default function Login() {
       return
     }
 
-    try {
-      const response = await authService.login(email, password)
-      if (response.data.success) {
-        login(response.data.data.token)
-        setIsError(false)
-        setErrorMessage("Successfully logged in, you will be redirected shortly.")
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        navigate("/")
-      }
-      else {
-        setErrorMessage("Login failed")
-        setIsError(true);
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setErrorMessage(error.response?.data?.message || error.message)
-      } else if (error instanceof Error) {
-        setErrorMessage(error.message)
-      } else {
-        setErrorMessage("An unknown error occurred")
-      }
-      setIsError(true)
+    const response = await authService.login(email, password)
+    if (response.data.success) {
+      login(response.data.data.token)
+      setIsError(false)
+      setErrorMessage(response.data.message)
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      navigate("/")
     }
+    else {
+      setErrorMessage(response.data.message)
+      setIsError(true);
+    }
+
   }
   return (
     <>
