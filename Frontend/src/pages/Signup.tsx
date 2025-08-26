@@ -63,7 +63,6 @@ export default function Signup() {
       return
     }
 
-
     const response = await authService.register({
       email: email,
       password: password,
@@ -80,10 +79,17 @@ export default function Signup() {
       navigate("/")
     }
     else {
-      setErrorMessage(response.data.message)
+      //backend validation errors
+      if (response.data.errors && typeof response.data.errors === "object") {
+        const allErrors = Object.values(response.data.errors).flat() as string[]
+        setErrorMessage(allErrors[0] || "Validation Error")
+      }
+      else {
+        setErrorMessage(response.data.Message)
+      }
+
       setIsError(true)
     }
-
   }
   return (
     <>

@@ -10,7 +10,10 @@ using CoreLayer.Entities;
 using DataLayer;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using BusinessLayer.Validations;
 using DotNetEnv;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +35,6 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader();
     });
 });
-        
 
 builder.Services.AddControllers();
 
@@ -73,6 +75,11 @@ builder.Services.AddScoped(typeof(IPostVoteControllerService), typeof(PostVoteCo
 builder.Services.AddScoped(typeof(IAuthRepository), typeof(AuthRepository));
 builder.Services.AddScoped(typeof(IAuthDbService), typeof(AuthDbService));
 builder.Services.AddScoped(typeof(IAuthControllerService), typeof(AuthControllerService));
+
+//fluent validation
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssembly(typeof(RegisterValidator).Assembly);
 
 //automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
