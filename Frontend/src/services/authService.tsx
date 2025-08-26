@@ -10,10 +10,18 @@ export const authService = {
     })
     return response
   },
+
   async register(data: any) {
-    const response = await api.post(`/${CONTROLLER_NAME}/register`, data)
-    return response
+    try {
+      const response = await api.post(`/${CONTROLLER_NAME}/register`, data)
+      return response
+    } catch (error: any) {
+      if (error.response) {
+        return error.response
+      }
+    }
   },
+
   async get(token: string) {
     const response = await api.post(`/${CONTROLLER_NAME}/get`, {
       token,

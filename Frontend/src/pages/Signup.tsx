@@ -52,44 +52,27 @@ export default function Signup() {
       return
     }
 
-    try {
-      const response = await authService.register({
-        email: email,
-        password: password,
-        confirmPassword: confirmPassword,
-        nickname: nickname,
-      })
 
-      if (response.data.success) {
-        login(response.data.data.token)
-        window.dispatchEvent(new Event("storage"))
-        setIsError(false)
-        setErrorMessage("Successfully signed up, you will be redirected shortly")
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        navigate("/")
-      }
-      else {
-        setErrorMessage("Signing up failed")
-        setIsError(true)
-      }
-    } catch (error: any) {
-      if (axios.isAxiosError(error)) {
-        const data = error.response?.data;
-        if (data?.errors && typeof data.errors === "object") {
-          const allErrors = Object.values(data.errors).flat() as string[];
-          setErrorMessage(allErrors[0] || "Validation error");
-        } else if (data?.title) {
-          setErrorMessage(data.title);
-        } else {
-          setErrorMessage(error.message);
-        }
-      } else if (error instanceof Error) {
-        setErrorMessage(error.message)
-      } else {
-        setErrorMessage("An unknown error occurred")
-      }
+    const response = await authService.register({
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword,
+      nickname: nickname,
+    })
+
+    if (response.data.success) {
+      login(response.data.data.token)
+      window.dispatchEvent(new Event("storage"))
+      setIsError(false)
+      setErrorMessage(response.data.message)
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      navigate("/")
+    }
+    else {
+      setErrorMessage(response.data.message)
       setIsError(true)
     }
+
   }
   return (
     <>
