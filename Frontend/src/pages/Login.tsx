@@ -58,7 +58,7 @@ export default function Login() {
         setErrorMessage(allErrors[0] || "Validation Error")
       }
       else {
-        setErrorMessage(response.data.Message)
+        setErrorMessage(response.data.message)
       }
 
       setIsError(true)
