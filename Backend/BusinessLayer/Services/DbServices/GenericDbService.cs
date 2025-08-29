@@ -8,17 +8,17 @@ namespace BusinessLayer.Services.DbServices;
 
 public class GenericDbService<TDto, TEntity> : IGenericDbService<TDto>
 {
-    protected readonly IGenericRepository<TEntity> _repository;
+    private readonly IGenericRepository<TEntity> _genericRepository;
     protected readonly IMapper _mapper;
 
     public GenericDbService(IGenericRepository<TEntity> repository, IMapper mapper)
     {
-        _repository = repository;
+        _genericRepository = repository;
         _mapper = mapper;
     }
     public async Task<IDataResult<List<TDto>>> GetAll()
     {
-        var result = await _repository.GetAll();
+        var result = await _genericRepository.GetAll();
         if (!result.Success)
         {
             return new ErrorDataResult<List<TDto>>(result.StatusCode,  result.Message);

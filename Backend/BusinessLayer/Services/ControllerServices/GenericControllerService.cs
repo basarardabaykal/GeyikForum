@@ -6,7 +6,7 @@ namespace BusinessLayer.Services.ControllerServices;
 
 public class GenericControllerService<TDto> : IGenericControllerService<TDto>
 {
-    protected readonly IGenericDbService<TDto> _genericDbService;
+    private readonly IGenericDbService<TDto> _genericDbService;
 
     public GenericControllerService(IGenericDbService<TDto> genericDbService)
     {
