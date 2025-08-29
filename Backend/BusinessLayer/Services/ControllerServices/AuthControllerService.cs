@@ -90,6 +90,11 @@ public class AuthControllerService : IAuthControllerService
 
     return new SuccessDataResult<LoginResponseDto>(result.Message, data);
   }
+
+  public async Task<IDataResult<AppUserDto>> GetCurrentUser(string uid)
+  {
+    return await _authDbService.GetCurrentUser(uid);
+  }
   
   private string GenerateJwtToken(AppUser user, List<string> roles)
   {
@@ -99,8 +104,7 @@ public class AuthControllerService : IAuthControllerService
     var claims = new List<Claim>
     {
       new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-      new(ClaimTypes.Name, user.UserName),
-      new(ClaimTypes.Email, user.Email) //can be simplified.
+      new(ClaimTypes.Email, user.Email),
     };
 
     foreach (var role in roles)

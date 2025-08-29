@@ -1,3 +1,5 @@
+using AutoMapper;
+using BusinessLayer.Dtos;
 using BusinessLayer.Dtos.Auth;
 using BusinessLayer.Interfaces.Repositories;
 using BusinessLayer.Interfaces.Services.DbServices;
@@ -12,11 +14,13 @@ public class AuthDbService : IAuthDbService
 {
   private readonly IAuthRepository  _authRepository;
   private readonly string _defaultRole;
+  private readonly IMapper _mapper;
 
-  public AuthDbService(IAuthRepository authRepository, IConfiguration configuration)
+  public AuthDbService(IAuthRepository authRepository, IConfiguration configuration,  IMapper mapper)
   {
     _authRepository = authRepository;
     _defaultRole = configuration.GetValue<string>("DefaultRole") ?? "User";
+    _mapper = mapper;
   }
   
   public async Task<IDataResult<AppUser>> Register(RegisterRequestDto registerRequestDto)
@@ -61,6 +65,19 @@ public class AuthDbService : IAuthDbService
     else {
       return await _authRepository.CheckPassword(user, loginRequestDto.Password);
     }
+  }
+
+  public async Task<IDataResult<AppUserDto>> GetCurrentUser(string uid)
+  {
+    var result = await _authRepository.GetUserByUid(uid);
+    if (!result.Success)
+    {
+      return new ErrorDataResult<AppUserDto>(result.StatusCode, result.Message);
+    }
+    
+    var userEntity = result.Data;
+    AppUserDto userDto = _mapper.Map<AppUserDto>(userEntity);
+    return new SuccessDataResult<AppUserDto>(result.Message, userDto);
   }
   
   public async Task<IDataResult<List<string>>> GetUserRoles(string email)

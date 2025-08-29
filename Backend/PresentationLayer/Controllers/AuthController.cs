@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using BusinessLayer.Dtos.Auth;
 using BusinessLayer.Interfaces.Services.ControllerServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PresentationLayer.Controllers;
@@ -27,6 +29,15 @@ public class AuthController : Controller
   public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
   {
     var result = await _controllerService.Login(loginRequestDto);
+    return StatusCode(result.StatusCode, result);
+  }
+
+  [HttpGet("get-current-user")]
+  [Authorize]
+  public async Task<IActionResult> GetCurrentUser()
+  {
+    var uid = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    var result = await _controllerService.GetCurrentUser(uid);
     return StatusCode(result.StatusCode, result);
   }
 }

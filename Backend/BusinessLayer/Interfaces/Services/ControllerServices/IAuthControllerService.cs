@@ -1,3 +1,4 @@
+using BusinessLayer.Dtos;
 using BusinessLayer.Dtos.Auth;
 using CoreLayer.Utilities.DataResults.Interfaces;
 
@@ -7,5 +8,6 @@ public interface IAuthControllerService
 { 
   public Task<IDataResult<RegisterResponseDto>> Register(RegisterRequestDto registerDTO);
   public Task<IDataResult<LoginResponseDto>> Login(LoginRequestDto loginDto);
+  public Task<IDataResult<AppUserDto>> GetCurrentUser(string jwtToken);
 
 }

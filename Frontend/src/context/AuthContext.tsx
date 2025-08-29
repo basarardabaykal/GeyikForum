@@ -34,11 +34,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           return
         }
 
-        const response = await authService.get(JSON.stringify(token))
+        const response = await authService.getCurrentUser()
+
+        if (!response) {
+          logout();
+          return
+        }
 
         if (!response.data.success) {
           //toast.error(response.data.message)
-          localStorage.removeItem("token")
+          logout()
+          return
         }
 
         const userData = response.data.data
@@ -58,6 +64,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setIsAuthenticated(true)
       } catch (error) {
         logout()
+        return
       }
     }
   }

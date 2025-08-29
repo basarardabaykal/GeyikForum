@@ -29,6 +29,23 @@ public class AuthRepository : IAuthRepository
       return new SuccessDataResult<AppUser>( "User with this email has been found successfully.", user);
     }
   }
+
+  public async Task<IDataResult<AppUser>> GetUserByUid(string uid)
+  {
+    if (string.IsNullOrEmpty(uid))
+    {
+      return new ErrorDataResult<AppUser>(400, "Current user was not found.");
+    }
+    var user = await _userManager.FindByIdAsync(uid);
+    if (user == null)
+    {
+      return new ErrorDataResult<AppUser>(404, "Current user was not found.");
+    }
+    else
+    {
+      return new SuccessDataResult<AppUser>( "Current user has been found successfully", user);
+    }
+  }
   
   public async Task<IDataResult<AppUser>> CheckPassword(AppUser user, string password)
   {
