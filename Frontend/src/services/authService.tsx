@@ -29,10 +29,9 @@ export const authService = {
     }
   },
 
-  async get(token: string) {
-    const response = await api.post(`/${CONTROLLER_NAME}/get`, {
-      token,
-    },
+  async getCurrentUser() {
+    const token = localStorage.getItem("token")
+    const response = await api.get(`/${CONTROLLER_NAME}/get-current-user`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
