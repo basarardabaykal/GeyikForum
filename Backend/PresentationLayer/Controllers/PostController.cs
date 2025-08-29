@@ -22,4 +22,12 @@ public class PostController : Controller
     var result = await _postControllerService.GetAll();
     return StatusCode(result.StatusCode, result);
   }
+
+  [HttpPost("create-post")]
+  public async Task<IActionResult> CreatePost(PostDto dto)
+  {
+    var result = await _postControllerService.CreatePost(dto);
+    return StatusCode(result.StatusCode, result);
+  }
+  
 }

@@ -3,11 +3,27 @@ using BusinessLayer.Dtos;
 using BusinessLayer.Interfaces.Repositories;
 using BusinessLayer.Interfaces.Services.DbServices;
 using CoreLayer.Entities;
+using CoreLayer.Utilities.DataResults.Concretes;
+using CoreLayer.Utilities.DataResults.Interfaces;
 
 namespace BusinessLayer.Services.DbServices;
 
 public class PostDbService : GenericDbService<PostDto, Post>, IPostDbService
 {
-  public PostDbService(IGenericRepository<Post> repository, IMapper mapper) : base(repository, mapper) {}
+  private readonly IPostRepository _repository;
+
+  public PostDbService(IPostRepository repository, IMapper mapper) : base(repository, mapper)
+  {
+    _repository = repository;
+  }
+
+  public async Task<IDataResult<PostDto>> CreatePost(PostDto dto)
+  {
+    var postEntity = _mapper.Map<Post>(dto);
+    var result = await _repository.CreatePost(postEntity);
+
+    var postDto = _mapper.Map<PostDto>(result.Data);
     
+    return new SuccessDataResult<PostDto>(result.Message, postDto);
+  }
 }

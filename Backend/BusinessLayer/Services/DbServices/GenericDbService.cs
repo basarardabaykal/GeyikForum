@@ -9,7 +9,7 @@ namespace BusinessLayer.Services.DbServices;
 public class GenericDbService<TDto, TEntity> : IGenericDbService<TDto>
 {
     protected readonly IGenericRepository<TEntity> _repository;
-    private readonly IMapper _mapper;
+    protected readonly IMapper _mapper;
 
     public GenericDbService(IGenericRepository<TEntity> repository, IMapper mapper)
     {
