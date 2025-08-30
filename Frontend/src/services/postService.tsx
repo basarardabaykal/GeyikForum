@@ -9,7 +9,13 @@ export const postService = {
         return response
     },
 
-    async create(post: Post) {
-        console.log(post);
+    async createPost(post: Post) {
+        try {
+            const response = await api.post(`/${CONTROLLER_NAME}/create-post`, post);
+            return response
+        } catch (error) {
+            console.log(error) //replace with popup message etc
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { postService } from "../services/postService"
+import { useAuth } from "@/context/AuthContext"
 import type { Post } from "../models/Post"
 import type { User } from "../models/User"
 import PostItem from "../components/PostItem"
@@ -11,6 +12,7 @@ import { postVoteService } from "../services/postVoteService"
 
 
 export default function Homepage() {
+  const { user } = useAuth()
   const [posts, setPosts] = useState<Post[]>([])
   const [users, setUsers] = useState<User[]>([])
   const [postVotes, setPostVotes] = useState<PostVote[]>([])
@@ -73,11 +75,23 @@ export default function Homepage() {
     )
   }
 
-  const handleCreatePost = (parentId: string, depth: number, title: string, content: string): void => {
-    console.log(parentId)
-    console.log(depth)
-    console.log(title)
-    console.log(content)
+  const handleCreatePost = async (parentId: string, depth: number, title: string, content: string): Promise<void> => {
+    const newPost: Post = {
+      id: "00000000-0000-0000-0000-000000000000",
+      userId: user?.id || "00000000-0000-0000-0000-000000000000",
+      parentId: parentId || null,
+      depth: depth,
+      title: title,
+      content: content,
+      voteScore: 0,
+      commentCount: 0,
+      isPinned: false,
+      isEdited: false,
+      isDeleted: false,
+    }
+
+    const response = await postService.createPost(newPost)
+    console.log(response)
   }
 
   useEffect(() => {
