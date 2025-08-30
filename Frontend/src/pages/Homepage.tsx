@@ -3,6 +3,7 @@ import { postService } from "../services/postService"
 import type { Post } from "../models/Post"
 import type { User } from "../models/User"
 import PostItem from "../components/PostItem"
+import PostCreator from "@/components/PostCreator"
 import { MessageCircle } from "lucide-react"
 import { userService } from "../services/userService"
 import type { PostVote } from "../models/PostVote"
@@ -72,6 +73,13 @@ export default function Homepage() {
     )
   }
 
+  const handleCreatePost = (parentId: string, depth: number, title: string, content: string): void => {
+    console.log(parentId)
+    console.log(depth)
+    console.log(title)
+    console.log(content)
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -114,6 +122,8 @@ export default function Homepage() {
         </div>
       </header>
 
+      <PostCreator isOpen={true} parentId="" depth={0} onSubmit={handleCreatePost}></PostCreator>
+
       <main className="max-w-4xl mx-auto px-4 py-6">
         {mainPosts.length === 0 ? (
           <div className="text-center py-12">
@@ -129,6 +139,7 @@ export default function Homepage() {
                 posts={posts}
                 onVote={handleVote}
                 getUserNickname={getUserNickname}
+                onSubmitReply={handleCreatePost}
               />
             ))}
           </div>
