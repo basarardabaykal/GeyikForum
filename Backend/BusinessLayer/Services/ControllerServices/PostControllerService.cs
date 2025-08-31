@@ -14,9 +14,9 @@ public class PostControllerService : GenericControllerService<PostDto>,  IPostCo
         _dbService = dbService;
     }
 
-    public async Task<IDataResult<PostDto>> CreatePost(PostDto dto)
+    public async Task<IDataResult<PostDto>> CreatePost(PostDto postDto)
     {
-        var result = await _dbService.CreatePost(dto);
+        var result = await _dbService.CreatePost(postDto);
         return result;
     }
 

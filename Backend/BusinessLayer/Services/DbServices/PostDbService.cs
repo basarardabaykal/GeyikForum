@@ -17,14 +17,14 @@ public class PostDbService : GenericDbService<PostDto, Post>, IPostDbService
     _repository = repository;
   }
 
-  public async Task<IDataResult<PostDto>> CreatePost(PostDto dto)
+  public async Task<IDataResult<PostDto>> CreatePost(PostDto postDto)
   {
-    var postEntity = _mapper.Map<Post>(dto);
+    var postEntity = _mapper.Map<Post>(postDto);
     var result = await _repository.CreatePost(postEntity);
 
-    var postDto = _mapper.Map<PostDto>(result.Data);
+    var newPostDto = _mapper.Map<PostDto>(result.Data);
     
-    return new SuccessDataResult<PostDto>(result.Message, postDto);
+    return new SuccessDataResult<PostDto>(result.Message, newPostDto);
   }
 
   public async Task<IDataResult<PostDto>> VotePost(Guid postId, int voteValue)

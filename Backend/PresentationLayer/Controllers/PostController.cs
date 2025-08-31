@@ -24,9 +24,9 @@ public class PostController : Controller
   }
 
   [HttpPost("create-post")]
-  public async Task<IActionResult> CreatePost(PostDto dto)
+  public async Task<IActionResult> CreatePost([FromBody] PostDto postDto)
   {
-    var result = await _postControllerService.CreatePost(dto);
+    var result = await _postControllerService.CreatePost(postDto);
     return StatusCode(result.StatusCode, result);
   }
 
