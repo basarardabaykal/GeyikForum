@@ -7,4 +7,5 @@ namespace BusinessLayer.Interfaces.Services.DbServices;
 public interface IPostDbService : IGenericDbService<PostDto>
 {
   public Task<IDataResult<PostDto>> CreatePost(PostDto dto);
+  public Task<IDataResult<PostDto>> VotePost(Guid postId, int voteValue);
 }

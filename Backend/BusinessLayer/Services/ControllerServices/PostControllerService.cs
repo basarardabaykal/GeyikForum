@@ -19,4 +19,9 @@ public class PostControllerService : GenericControllerService<PostDto>,  IPostCo
         var result = await _dbService.CreatePost(dto);
         return result;
     }
+
+    public async Task<IDataResult<PostDto>> VotePost(Guid postId, int voteValue)
+    {
+        return await  _dbService.VotePost(postId, voteValue);
+    }
 }

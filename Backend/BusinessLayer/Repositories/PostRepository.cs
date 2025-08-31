@@ -16,11 +16,27 @@ public class PostRepository : GenericRepository<Post>,  IPostRepository
     var result = await _dbSet.AddAsync(post);
     if (result.Entity != null)
     {
-      _dbContext.SaveChangesAsync();
+      await _dbContext.SaveChangesAsync();
       return new SuccessDataResult<Post>("Post created successfully.", result.Entity);
     }
     
     return new ErrorDataResult<Post>(500,"Failed to create post.");
+  }
+
+  public async Task<IDataResult<Post>> VotePost(Guid postId, int voteValue)
+  {
+    if (!(voteValue == 1 || voteValue == -1))
+    {
+      return new ErrorDataResult<Post>(400, "Invalid vote value.");
+    }
+    var post = await _dbSet.FindAsync(postId);
+    if (post == null)
+    {
+      return new ErrorDataResult<Post>(404, "Post not found.");
+    }
+    post.VoteScore += voteValue;
+    await _dbContext.SaveChangesAsync();
+    return new SuccessDataResult<Post>("Post voted successfully.", post);
   }
   
 }

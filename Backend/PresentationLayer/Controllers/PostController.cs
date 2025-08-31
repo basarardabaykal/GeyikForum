@@ -29,5 +29,12 @@ public class PostController : Controller
     var result = await _postControllerService.CreatePost(dto);
     return StatusCode(result.StatusCode, result);
   }
+
+  [HttpPatch("vote-post")]
+  public async Task<IActionResult> VotePost([FromBody] PostVoteDto postVoteDto)
+  {
+    var result = await _postControllerService.VotePost(postVoteDto.PostId, postVoteDto.VoteValue);
+    return StatusCode(result.StatusCode, result);
+  }
   
 }

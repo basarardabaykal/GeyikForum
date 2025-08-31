@@ -26,4 +26,11 @@ public class PostDbService : GenericDbService<PostDto, Post>, IPostDbService
     
     return new SuccessDataResult<PostDto>(result.Message, postDto);
   }
+
+  public async Task<IDataResult<PostDto>> VotePost(Guid postId, int voteValue)
+  {
+    var result = await _repository.VotePost(postId, voteValue);
+    var postDto = _mapper.Map<PostDto>(result.Data);
+    return new SuccessDataResult<PostDto>(result.Message, postDto);
+  }
 }
