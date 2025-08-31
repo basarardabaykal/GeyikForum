@@ -22,6 +22,11 @@ public class PostDbService : GenericDbService<PostDto, Post>, IPostDbService
     var postEntity = _mapper.Map<Post>(postDto);
     var result = await _repository.CreatePost(postEntity);
 
+    if (!result.Success)
+    {
+      return new ErrorDataResult<PostDto>(result.StatusCode, result.Message);
+    }
+
     var newPostDto = _mapper.Map<PostDto>(result.Data);
     
     return new SuccessDataResult<PostDto>(result.Message, newPostDto);
