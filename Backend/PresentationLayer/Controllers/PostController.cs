@@ -16,7 +16,7 @@ public class PostController : Controller
       _postControllerService = postControllerService;
     }
 
-  [HttpGet("GetAll")]
+  [HttpGet("get-all")]
   public async Task<IActionResult> GetAll()
   {
     var result = await _postControllerService.GetAll();

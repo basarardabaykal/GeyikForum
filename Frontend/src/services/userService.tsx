@@ -4,7 +4,7 @@ const CONTROLLER_NAME = "user";
 
 export const userService = {
     async getAll() {
-        const response = await api.get(`/${CONTROLLER_NAME}/GetAll`); // pass token here later
+        const response = await api.get(`/${CONTROLLER_NAME}/get-all`); // pass token here later
         return response
     }
 }

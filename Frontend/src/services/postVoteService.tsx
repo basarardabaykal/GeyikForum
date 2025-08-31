@@ -4,7 +4,7 @@ const CONTROLLER_NAME = "PostVote"
 
 export const postVoteService = {
     async getAll() {
-        const response = await api.get(`/${CONTROLLER_NAME}/GetAll`)
+        const response = await api.get(`/${CONTROLLER_NAME}/get-all`)
         return response
     }
 }

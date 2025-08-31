@@ -15,7 +15,7 @@ public class PostVoteController : Controller
     _postVoteControllerService = postVoteControllerService;
   }
 
-  [HttpGet("GetAll")]
+  [HttpGet("get-all")]
   public async Task<IActionResult> GetAll()
   {
     var response = await _postVoteControllerService.GetAll();

@@ -15,7 +15,7 @@ public class UserController : Controller
     _userControllerService = userControllerService;
   }
 
-  [HttpGet("GetAll")]
+  [HttpGet("get-all")]
   public async Task<IActionResult> GetAll()
   {
     var result = await _userControllerService.GetAll();
