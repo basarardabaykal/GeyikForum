@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { postService } from "../services/postService"
+import { postVoteService } from "../services/postVoteService"
 import { useAuth } from "@/context/AuthContext"
 import type { Post } from "../models/Post"
 import type { User } from "../models/User"
@@ -8,7 +9,6 @@ import PostCreator from "@/components/PostCreator"
 import { MessageCircle } from "lucide-react"
 import { userService } from "../services/userService"
 import type { PostVote } from "../models/PostVote"
-import { postVoteService } from "../services/postVoteService"
 
 
 export default function Homepage() {
@@ -65,14 +65,24 @@ export default function Homepage() {
     return user?.nickname || "anon"
   }
 
-  const handleVote = (postId: string, change: number): void => { //update backend votes here later.
-    setPosts(prevPosts =>
+  const handleVote = async (postId: string, change: number): Promise<void> => {
+    const newPostVote: PostVote = {
+      id: "00000000-0000-0000-0000-000000000000",
+      userId: user?.id || "00000000-0000-0000-0000-000000000000",
+      postId: postId,
+      voteValue: change,
+    }
+
+    const response = await postVoteService.createPostVote(newPostVote)
+    console.log(response)
+
+    /*setPosts(prevPosts =>
       prevPosts.map(post =>
         post.id === postId
           ? { ...post, voteScore: post.voteScore + change }
           : post
       )
-    )
+    )*/
   }
 
   const handleCreatePost = async (parentId: string, depth: number, title: string, content: string): Promise<void> => {

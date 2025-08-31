@@ -1,8 +1,6 @@
 export interface PostVote {
-    Id: string;
-    UserId: string;
-    PostId: string;
-    VoteValue: number;
-    CreatedAt: Date;
-    UpdatedAt: Date;
+    id: string;
+    userId: string;
+    postId: string;
+    voteValue: number;
 }
