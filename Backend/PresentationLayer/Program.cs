@@ -75,7 +75,7 @@ builder.Services.AddScoped(typeof(IPostControllerService), typeof(PostController
 builder.Services.AddScoped(typeof(IUserRepository), typeof(UserRepository));
 builder.Services.AddScoped(typeof(IUserDbService), typeof(UserDbService));
 builder.Services.AddScoped(typeof(IUserControllerService), typeof(UserControllerService));
-builder.Services.AddScoped(typeof(IPostVoteControllerService),  typeof(PostVoteControllerService));
+builder.Services.AddScoped(typeof(IPostVoteRepository),  typeof(PostVoteRepository));
 builder.Services.AddScoped(typeof(IPostVoteDbService),  typeof(PostVoteDbService));
 builder.Services.AddScoped(typeof(IPostVoteControllerService), typeof(PostVoteControllerService));
 builder.Services.AddScoped(typeof(IAuthRepository), typeof(AuthRepository));

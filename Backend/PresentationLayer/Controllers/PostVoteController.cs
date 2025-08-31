@@ -1,3 +1,4 @@
+using BusinessLayer.Dtos;
 using BusinessLayer.Interfaces.Services.ControllerServices;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +20,13 @@ public class PostVoteController : Controller
   public async Task<IActionResult> GetAll()
   {
     var response = await _postVoteControllerService.GetAll();
+    return StatusCode(response.StatusCode, response);
+  }
+
+  [HttpPost("create-post-vote")]
+  public async Task<IActionResult> CreatePostVote([FromBody] PostVoteDto postVote)
+  {
+    var response = await _postVoteControllerService.CreatePostVote(postVote);
     return StatusCode(response.StatusCode, response);
   }
 }
