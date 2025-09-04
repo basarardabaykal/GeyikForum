@@ -12,9 +12,7 @@ public class PostVoteRepository : GenericRepository<PostVote>,  IPostVoteReposit
 
   public async Task<IDataResult<PostVote>> CreatePostVote(PostVote postVote)
   {
-    Console.WriteLine("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     Console.WriteLine(postVote.UserId);
-    Console.WriteLine("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
     var result = await _dbSet.AddAsync(postVote);
     
     if (result.Entity != null)
