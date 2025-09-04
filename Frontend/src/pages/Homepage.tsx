@@ -73,7 +73,7 @@ export default function Homepage() {
       voteValue: change,
     }
 
-    const response = await postVoteService.createPostVote(newPostVote)
+    const response = await postService.votePost(newPostVote)
     console.log(response)
 
     /*setPosts(prevPosts =>

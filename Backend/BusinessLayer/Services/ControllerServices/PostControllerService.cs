@@ -1,27 +1,50 @@
 using BusinessLayer.Dtos;
 using BusinessLayer.Interfaces.Services.ControllerServices;
 using BusinessLayer.Interfaces.Services.DbServices;
+using CoreLayer.Utilities.DataResults.Concretes;
 using CoreLayer.Utilities.DataResults.Interfaces;
+using DataLayer;
 
 namespace BusinessLayer.Services.ControllerServices;
 
 public class PostControllerService : GenericControllerService<PostDto>,  IPostControllerService
 {
-    private readonly IPostDbService _dbService;
+    private readonly IPostDbService _postDbService;
+    private readonly IPostVoteControllerService _postVoteControllerService;
+    private readonly AppDbContext  _dbContext;
 
-    public PostControllerService(IPostDbService dbService) : base(dbService)
+    public PostControllerService(IPostDbService postDbService, IPostVoteControllerService postVoteControllerService, AppDbContext dbContext) : base(postDbService)
     {
-        _dbService = dbService;
+        _postDbService = postDbService;
+        _postVoteControllerService = postVoteControllerService;
+        _dbContext = dbContext;
     }
 
     public async Task<IDataResult<PostDto>> CreatePost(PostDto postDto)
     {
-        var result = await _dbService.CreatePost(postDto);
+        var result = await _postDbService.CreatePost(postDto);
         return result;
     }
 
-    public async Task<IDataResult<PostDto>> VotePost(Guid postId, int voteValue)
+    public async Task<IDataResult<PostDto>> VotePost(PostVoteDto postVoteDto)
     {
-        return await  _dbService.VotePost(postId, voteValue);
+        using var transaction = await _dbContext.Database.BeginTransactionAsync();
+        
+        var postVoteResult = await _postVoteControllerService.CreatePostVote(postVoteDto);
+        if (!postVoteResult.Success)
+        {
+            await transaction.RollbackAsync();
+            return new ErrorDataResult<PostDto>(postVoteResult.StatusCode, postVoteResult.Message);
+        }
+        
+        var postResult = await _postDbService.VotePost(postVoteDto.PostId, postVoteDto.VoteValue);
+        if (!postResult.Success)
+        {
+            await transaction.RollbackAsync();
+            return postResult;
+        }
+        
+        await transaction.CommitAsync();
+        return postResult;
     }
 }

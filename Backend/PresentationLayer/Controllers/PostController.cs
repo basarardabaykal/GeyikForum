@@ -33,7 +33,7 @@ public class PostController : Controller
   [HttpPatch("vote-post")]
   public async Task<IActionResult> VotePost([FromBody] PostVoteDto postVoteDto)
   {
-    var result = await _postControllerService.VotePost(postVoteDto.PostId, postVoteDto.VoteValue);
+    var result = await _postControllerService.VotePost(postVoteDto);
     return StatusCode(result.StatusCode, result);
   }
   

@@ -3,6 +3,7 @@ using CoreLayer.Entities;
 using CoreLayer.Utilities.DataResults.Concretes;
 using CoreLayer.Utilities.DataResults.Interfaces;
 using DataLayer;
+using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLayer.Repositories;
 
@@ -12,7 +13,12 @@ public class PostVoteRepository : GenericRepository<PostVote>,  IPostVoteReposit
 
   public async Task<IDataResult<PostVote>> CreatePostVote(PostVote postVote)
   {
-    Console.WriteLine(postVote.UserId);
+    var existingPostVote = await _dbSet.FirstOrDefaultAsync(e => e.PostId == postVote.PostId && e.UserId == postVote.UserId);
+    if (existingPostVote != null)
+    {
+      return new ErrorDataResult<PostVote>(500, "Duplicate vote.");
+    }
+    
     var result = await _dbSet.AddAsync(postVote);
     
     if (result.Entity != null)

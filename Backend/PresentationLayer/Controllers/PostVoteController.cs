@@ -22,11 +22,5 @@ public class PostVoteController : Controller
     var response = await _postVoteControllerService.GetAll();
     return StatusCode(response.StatusCode, response);
   }
-
-  [HttpPost("create-post-vote")]
-  public async Task<IActionResult> CreatePostVote([FromBody] PostVoteDto postVote)
-  {
-    var response = await _postVoteControllerService.CreatePostVote(postVote);
-    return StatusCode(response.StatusCode, response);
-  }
+  
 }

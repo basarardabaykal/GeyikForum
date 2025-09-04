@@ -6,5 +6,5 @@ namespace BusinessLayer.Interfaces.Services.ControllerServices;
 public interface IPostControllerService :  IGenericControllerService<PostDto>
 {
   public Task<IDataResult<PostDto>> CreatePost(PostDto dto);
-  public Task<IDataResult<PostDto>> VotePost(Guid postId, int voteValue);
+  public Task<IDataResult<PostDto>> VotePost(PostVoteDto postVoteDto);
 }
