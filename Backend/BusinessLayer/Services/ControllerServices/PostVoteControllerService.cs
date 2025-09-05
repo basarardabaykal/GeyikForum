@@ -7,15 +7,15 @@ namespace BusinessLayer.Services.ControllerServices;
 
 public class PostVoteControllerService : GenericControllerService<PostVoteDto>,  IPostVoteControllerService
 {
-  private readonly IPostVoteDbService _dbService;
+  private readonly IPostVoteDbService _postVoteDbService;
 
-  public PostVoteControllerService(IPostVoteDbService dbService) : base(dbService)
+  public PostVoteControllerService(IPostVoteDbService postVoteDbService) : base(postVoteDbService)
   {
-    _dbService = dbService;
+    _postVoteDbService = postVoteDbService;
   }
 
   public async Task<IDataResult<PostVoteDto>> CreatePostVote(PostVoteDto postVote)
   {
-    return await  _dbService.CreatePostVote(postVote);
+    return await   _postVoteDbService.CreatePostVote(postVote);
   }
 }
