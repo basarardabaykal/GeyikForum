@@ -65,6 +65,13 @@ export default function Homepage() {
     return user?.nickname || "anon"
   }
 
+  const getUserVoteForPost = (postId: string): number => {
+    const userVote = postVotes.find(v => {
+      return (v.postId == postId) && (v.userId == user?.id)
+    })
+    return userVote?.voteValue || 0
+  }
+
   const handleVote = async (postId: string, change: number): Promise<void> => {
     const newPostVote: PostVote = {
       id: "00000000-0000-0000-0000-000000000000",
@@ -163,6 +170,7 @@ export default function Homepage() {
                 posts={posts}
                 onVote={handleVote}
                 getUserNickname={getUserNickname}
+                getUserVoteForPost={getUserVoteForPost}
                 onSubmitReply={handleCreatePost}
               />
             ))}

@@ -10,17 +10,21 @@ interface PostItemProps {
   posts: Post[];
   onVote: (postId: string, change: number) => void;
   getUserNickname: (userId: string) => string;
+  getUserVoteForPost: (postId: string) => number;
   //for submittin a reply to this post
   onSubmitReply: (parentId: string, depth: number, title: string, content: string) => void;
 }
 
-export default function PostItem({ post, posts, onVote, getUserNickname, onSubmitReply }: PostItemProps) {
+export default function PostItem({ post, posts, onVote, getUserNickname, getUserVoteForPost, onSubmitReply }: PostItemProps) {
   const isMainPost = post.parentId === null
   const replies = posts.filter(p => p.parentId === post.id).sort((a, b) => b.voteScore - a.voteScore)
 
   const marginLeft: number = post.depth * 24
 
+  const userVote = getUserVoteForPost(post.id)
+
   const [showReplyCreator, setShowReplyCreator] = useState<boolean>(false)
+
 
   return (
     <div className={`${isMainPost ? 'border rounded-lg mb-4 bg-white' : ''}`}>
@@ -30,8 +34,8 @@ export default function PostItem({ post, posts, onVote, getUserNickname, onSubmi
       >
         <VoteButtons
           score={post.voteScore}
-          onUpvote={(change) => onVote(post.id, change)}
-          onDownvote={(change) => onVote(post.id, change)}
+          userVote={userVote}
+          onVote={(change) => onVote(post.id, change)}
         />
 
         <div className="flex-1">
@@ -79,6 +83,7 @@ export default function PostItem({ post, posts, onVote, getUserNickname, onSubmi
           posts={posts}
           onVote={onVote}
           getUserNickname={getUserNickname}
+          getUserVoteForPost={getUserVoteForPost}
           onSubmitReply={onSubmitReply}
         />
       ))}

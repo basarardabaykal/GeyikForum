@@ -4,32 +4,34 @@ import { ChevronUp, ChevronDown } from "lucide-react"
 
 interface VoteButtonsProps {
   score: number;
-  onUpvote: (change: number) => void;
-  onDownvote: (change: number) => void;
+  userVote: number;
+  onVote: (change: number) => void;
 }
 
-export default function VoteButtons({ score, onUpvote, onDownvote }: VoteButtonsProps) {
-  const [userVote, setUserVote] = useState<'up' | 'down' | null>(null)
+export default function VoteButtons({ score, userVote, onVote }: VoteButtonsProps) {
+  const [currentVote, setCurrentVote] = useState<number>(userVote)
 
   const handleUpvote = (): void => {
-    if (userVote === 'up') {
-      setUserVote(null)
-      onUpvote(-1)
+    console.log(userVote)
+    console.log(currentVote)
+    if (currentVote === 1) {
+      setCurrentVote(0)
+      onVote(-1)
     } else {
-      const change = userVote === 'down' ? 2 : 1
-      setUserVote('up')
-      onUpvote(change)
+      const change = currentVote === -1 ? 2 : 1
+      setCurrentVote(1)
+      onVote(change)
     }
   }
 
   const handleDownvote = (): void => {
-    if (userVote === 'down') {
-      setUserVote(null)
-      onDownvote(1)
+    if (currentVote === -1) {
+      setCurrentVote(0)
+      onVote(1)
     } else {
-      const change = userVote === 'up' ? -2 : -1
-      setUserVote('down')
-      onDownvote(change)
+      const change = currentVote === 1 ? -2 : -1
+      setCurrentVote(-1)
+      onVote(change)
     }
   }
 
@@ -38,19 +40,19 @@ export default function VoteButtons({ score, onUpvote, onDownvote }: VoteButtons
     <div className="flex flex-col items-center mr-3">
       <button
         onClick={handleUpvote}
-        className={`p-1 rounded hover:bg-gray-100 ${userVote === 'up' ? 'text-orange-500' : 'text-gray-500'
+        className={`p-1 rounded hover:bg-gray-100 ${currentVote === 1 ? 'text-orange-500' : 'text-gray-500'
           }`}
       >
         <ChevronUp size={20} />
       </button>
-      <span className={`font-medium text-sm ${userVote === 'up' ? 'text-orange-500' :
-        userVote === 'down' ? 'text-purple-500' : 'text-gray-700'
+      <span className={`font-medium text-sm ${currentVote === 1 ? 'text-orange-500' :
+        currentVote === -1 ? 'text-purple-500' : 'text-gray-700'
         }`}>
         {score}
       </span>
       <button
         onClick={handleDownvote}
-        className={`p-1 rounded hover:bg-gray-100 ${userVote === 'down' ? 'text-purple-500' : 'text-gray-500'
+        className={`p-1 rounded hover:bg-gray-100 ${currentVote === -1 ? 'text-purple-500' : 'text-gray-500'
           }`}
       >
         <ChevronDown size={20} />
