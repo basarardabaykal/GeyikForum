@@ -83,13 +83,13 @@ export default function Homepage() {
     const response = await postService.votePost(newPostVote)
     console.log(response)
 
-    /*setPosts(prevPosts =>
+    setPosts(prevPosts =>
       prevPosts.map(post =>
         post.id === postId
           ? { ...post, voteScore: post.voteScore + change }
           : post
       )
-    )*/
+    )
   }
 
   const handleCreatePost = async (parentId: string, depth: number, title: string, content: string): Promise<void> => {
