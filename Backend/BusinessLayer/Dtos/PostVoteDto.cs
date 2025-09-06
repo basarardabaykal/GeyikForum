@@ -6,4 +6,5 @@ public class PostVoteDto
   public Guid UserId {get; set; }
   public Guid PostId {get; set; }
   public int VoteValue {get; set; }
+  public int PreviousVoteValue {get; set; }
 }
