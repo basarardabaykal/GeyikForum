@@ -5,36 +5,29 @@ import { ChevronUp, ChevronDown } from "lucide-react"
 interface VoteButtonsProps {
   score: number;
   userVote: number;
-  onVote: (change: number) => void;
+  onVote: (newVote: number) => void;
 }
 
 export default function VoteButtons({ score, userVote, onVote }: VoteButtonsProps) {
   const [currentVote, setCurrentVote] = useState<number>(userVote)
 
   const handleUpvote = (): void => {
-    console.log(userVote)
-    console.log(currentVote)
+    onVote(1)
     if (currentVote === 1) {
       setCurrentVote(0)
-      onVote(-1)
     } else {
-      const change = currentVote === -1 ? 2 : 1
       setCurrentVote(1)
-      onVote(change)
     }
   }
 
   const handleDownvote = (): void => {
+    onVote(-1)
     if (currentVote === -1) {
       setCurrentVote(0)
-      onVote(1)
     } else {
-      const change = currentVote === 1 ? -2 : -1
       setCurrentVote(-1)
-      onVote(change)
     }
   }
-
 
   return (
     <div className="flex flex-col items-center mr-3">

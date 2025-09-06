@@ -8,7 +8,7 @@ import { useState } from "react";
 interface PostItemProps {
   post: Post;
   posts: Post[];
-  onVote: (postId: string, change: number) => void;
+  onVote: (postId: string, newVote: number) => void;
   getUserNickname: (userId: string) => string;
   getUserVoteForPost: (postId: string) => number;
   //for submittin a reply to this post
@@ -35,7 +35,7 @@ export default function PostItem({ post, posts, onVote, getUserNickname, getUser
         <VoteButtons
           score={post.voteScore}
           userVote={userVote}
-          onVote={(change) => onVote(post.id, change)}
+          onVote={(newVote) => onVote(post.id, newVote)}
         />
 
         <div className="flex-1">

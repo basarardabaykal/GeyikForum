@@ -4,6 +4,7 @@ using CoreLayer.Utilities.DataResults.Concretes;
 using CoreLayer.Utilities.DataResults.Interfaces;
 using DataLayer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace BusinessLayer.Repositories;
 
@@ -14,19 +15,47 @@ public class PostVoteRepository : GenericRepository<PostVote>,  IPostVoteReposit
   public async Task<IDataResult<PostVote>> CreatePostVote(PostVote postVote)
   {
     var existingPostVote = await _dbSet.FirstOrDefaultAsync(e => e.PostId == postVote.PostId && e.UserId == postVote.UserId);
-    if (existingPostVote != null)
+    
+    EntityEntry<PostVote>? result = null;
+    
+    if (postVote.VoteValue == 1)
     {
-      return new ErrorDataResult<PostVote>(500, "Duplicate vote.");
+      if (existingPostVote == null)
+      {
+        result = await _dbSet.AddAsync(postVote);
+      }
+      else if (existingPostVote.VoteValue == 1)
+      {
+        _dbSet.Remove(existingPostVote);
+      }
+      else
+      {
+        _dbSet.Remove(existingPostVote);
+        result = await _dbSet.AddAsync(postVote);
+      }
+    }
+    else if (postVote.VoteValue == -1)
+    {
+      if (existingPostVote == null)
+      {
+        result = await _dbSet.AddAsync(postVote);
+      }
+      else if (existingPostVote.VoteValue == -1)
+      {
+        _dbSet.Remove(existingPostVote);
+      }
+      else
+      {
+        _dbSet.Remove(existingPostVote);
+        result = await _dbSet.AddAsync(postVote);
+      }
+    }
+    else
+    {
+      return new ErrorDataResult<PostVote>(400, "Invalid vote value");
     }
     
-    var result = await _dbSet.AddAsync(postVote);
-    
-    if (result.Entity != null)
-    {
-      await _dbContext.SaveChangesAsync();
-      return new SuccessDataResult<PostVote>("Post Vote created successfully.", result.Entity);
-    }
-    
-    return new ErrorDataResult<PostVote>(500,"Failed to create post vote.");
+    await _dbContext.SaveChangesAsync();
+    return new SuccessDataResult<PostVote>("Post Vote created successfully.", result?.Entity);
   }
 }

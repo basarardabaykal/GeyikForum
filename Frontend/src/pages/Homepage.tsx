@@ -72,12 +72,12 @@ export default function Homepage() {
     return userVote?.voteValue || 0
   }
 
-  const handleVote = async (postId: string, change: number): Promise<void> => {
+  const handleVote = async (postId: string, newVote: number): Promise<void> => {
     const newPostVote: PostVote = {
       id: "00000000-0000-0000-0000-000000000000",
       userId: user?.id || "00000000-0000-0000-0000-000000000000",
       postId: postId,
-      voteValue: change,
+      voteValue: newVote,
     }
 
     const response = await postService.votePost(newPostVote)
@@ -86,7 +86,7 @@ export default function Homepage() {
     setPosts(prevPosts =>
       prevPosts.map(post =>
         post.id === postId
-          ? { ...post, voteScore: post.voteScore + change }
+          ? { ...post, voteScore: post.voteScore + newVote } //fix this. maybe get from response.
           : post
       )
     )
