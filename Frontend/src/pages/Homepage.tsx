@@ -83,13 +83,15 @@ export default function Homepage() {
     const response = await postService.votePost(newPostVote)
     console.log(response)
 
-    setPosts(prevPosts =>
-      prevPosts.map(post =>
-        post.id === postId
-          ? { ...post, voteScore: post.voteScore + newVote } //fix this. maybe get from response.
-          : post
+
+
+    if (response?.data?.data?.voteScore != undefined) {
+      setPosts(prevPosts =>
+        prevPosts.map(post =>
+          post.id === postId ? { ...post, voteScore: response.data.data.voteScore } : post
+        )
       )
-    )
+    }
   }
 
   const handleCreatePost = async (parentId: string, depth: number, title: string, content: string): Promise<void> => {
