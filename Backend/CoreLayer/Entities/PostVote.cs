@@ -6,6 +6,7 @@ public class PostVote : IBaseEntity
     public Guid UserId {get; set; }
     public Guid PostId {get; set; }
     public int VoteValue {get; set; }
+    public int? PreviousVoteValue {get; set; }
     public DateTime CreatedAt {get; set; }
     public DateTime UpdatedAt {get; set; }
     public virtual AppUser User { get; set; }
