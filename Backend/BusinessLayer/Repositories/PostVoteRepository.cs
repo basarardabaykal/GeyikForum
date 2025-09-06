@@ -31,6 +31,7 @@ public class PostVoteRepository : GenericRepository<PostVote>,  IPostVoteReposit
       else
       {
         _dbSet.Remove(existingPostVote);
+        postVote.PreviousVoteValue = existingPostVote.VoteValue;
         result = await _dbSet.AddAsync(postVote);
       }
     }
@@ -47,6 +48,7 @@ public class PostVoteRepository : GenericRepository<PostVote>,  IPostVoteReposit
       else
       {
         _dbSet.Remove(existingPostVote);
+        postVote.PreviousVoteValue = existingPostVote.VoteValue;
         result = await _dbSet.AddAsync(postVote);
       }
     }

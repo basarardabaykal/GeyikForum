@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using BusinessLayer.Dtos;
 using BusinessLayer.Interfaces.Services.ControllerServices;
 using BusinessLayer.Interfaces.Services.DbServices;
@@ -36,8 +37,40 @@ public class PostControllerService : GenericControllerService<PostDto>,  IPostCo
             await transaction.RollbackAsync();
             return new ErrorDataResult<PostDto>(postVoteResult.StatusCode, postVoteResult.Message);
         }
+
+        IDataResult<PostDto> postResult;
+
+        if (postVoteDto.VoteValue == 1)
+        {
+            if (postVoteResult.Data == null)
+            {
+                postResult = await _postDbService.VotePost(postVoteDto.PostId, -1);
+            }
+            else if (postVoteResult.Data.PreviousVoteValue == null)
+            {
+                postResult = await _postDbService.VotePost(postVoteDto.PostId, 1);
+            }
+            else
+            {
+                postResult = await _postDbService.VotePost(postVoteDto.PostId, 2);
+            }
+        }
+        else
+        {
+            if (postVoteResult.Data == null)
+            {
+                postResult = await _postDbService.VotePost(postVoteDto.PostId, 1);
+            }
+            else if (postVoteResult.Data.PreviousVoteValue == null)
+            {
+                postResult = await _postDbService.VotePost(postVoteDto.PostId, -1);
+            }
+            else
+            {
+                postResult = await _postDbService.VotePost(postVoteDto.PostId, -2);
+            }
+        }
         
-        var postResult = await _postDbService.VotePost(postVoteDto.PostId, postVoteDto.VoteValue);
         if (!postResult.Success)
         {
             await transaction.RollbackAsync();

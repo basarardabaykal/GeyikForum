@@ -25,10 +25,6 @@ public class PostRepository : GenericRepository<Post>,  IPostRepository
 
   public async Task<IDataResult<Post>> VotePost(Guid postId, int voteValue)
   {
-    if (!(voteValue == 1 || voteValue == -1))
-    {
-      return new ErrorDataResult<Post>(400, "Invalid vote value.");
-    }
     var post = await _dbSet.FindAsync(postId);
     if (post == null)
     {
