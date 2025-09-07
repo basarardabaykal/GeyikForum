@@ -1,5 +1,6 @@
 using BusinessLayer.Dtos;
 using BusinessLayer.Interfaces.Services.ControllerServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PresentationLayer.Controllers;
@@ -17,6 +18,7 @@ public class PostVoteController : Controller
   }
 
   [HttpGet("get-all")]
+  [Authorize]
   public async Task<IActionResult> GetAll()
   {
     var response = await _postVoteControllerService.GetAll();

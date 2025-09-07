@@ -17,6 +17,7 @@ public class PostController : Controller
     }
 
   [HttpGet("get-all")]
+  [Authorize]
   public async Task<IActionResult> GetAll()
   {
     var result = await _postControllerService.GetAll();
@@ -24,6 +25,7 @@ public class PostController : Controller
   }
 
   [HttpPost("create-post")]
+  [Authorize]
   public async Task<IActionResult> CreatePost([FromBody] PostDto postDto)
   {
     var result = await _postControllerService.CreatePost(postDto);
@@ -31,6 +33,7 @@ public class PostController : Controller
   }
 
   [HttpPatch("vote-post")]
+  [Authorize]
   public async Task<IActionResult> VotePost([FromBody] PostVoteDto postVoteDto)
   {
     var result = await _postControllerService.VotePost(postVoteDto);
