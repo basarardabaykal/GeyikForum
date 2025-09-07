@@ -24,9 +24,11 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
         builder.Entity<AppUser>(entity =>
         {
             entity.ToTable("AspNetUsers");
-            entity.Property(e => e.Nickname).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.Nickname).IsRequired().HasMaxLength(20);
             entity.HasIndex(e => e.Nickname).IsUnique();
             entity.Property(e => e.Karma).HasDefaultValue(0);
+            entity.Property(e => e.Email).IsRequired();
+            entity.HasIndex(e => e.Email).IsUnique();
         });
         
         // Configure Post
@@ -34,7 +36,7 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
         {
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Content).IsRequired();
-            entity.Property(e => e.Title).HasMaxLength(300);
+            entity.Property(e => e.Title).HasMaxLength(50);
             entity.Property(e => e.VoteScore).HasDefaultValue(0);
             entity.Property(e => e.CommentCount).HasDefaultValue(0);
             entity.Property(e => e.Depth).HasDefaultValue(0);
@@ -50,6 +52,13 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
                   .WithMany(u => u.Posts)
                   .HasForeignKey(p => p.UserId)
                   .OnDelete(DeleteBehavior.Cascade);
+            
+            // Relationship with PostVote
+            entity.HasMany(p => p.Votes)
+                .WithOne(v => v.Post)
+                .HasForeignKey(v => v.PostId)
+                .OnDelete(DeleteBehavior.Cascade);
+
                   
             // Indexes for performance
             entity.HasIndex(e => e.UserId);
@@ -65,6 +74,13 @@ public class AppDbContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
             
             // Composite unique constraint - one vote per user per post
             entity.HasIndex(e => new { e.UserId, e.PostId }).IsUnique();
+            
+            entity.Property(e => e.VoteValue).IsRequired();
+            entity.Property(e => e.UserId).IsRequired();
+            entity.Property(e => e.PostId).IsRequired();
+            
+            entity.Property(e => e.VoteValue).HasDefaultValue(0);
+            entity.Property(e => e.PreviousVoteValue).HasDefaultValue(null);
             
             // Relationships
             entity.HasOne(pv => pv.User)

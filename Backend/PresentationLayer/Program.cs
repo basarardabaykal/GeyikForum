@@ -87,6 +87,7 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssembly(typeof(RegisterValidator).Assembly);
 builder.Services.AddValidatorsFromAssembly(typeof(LoginValidator).Assembly);
+builder.Services.AddValidatorsFromAssembly(typeof(PostValidator).Assembly);
 
 //automapper
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
