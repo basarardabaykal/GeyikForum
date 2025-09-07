@@ -26,11 +26,12 @@ DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 //cors policies
+var frontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL");
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("FrontendPolicy", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins(frontendUrl)
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
