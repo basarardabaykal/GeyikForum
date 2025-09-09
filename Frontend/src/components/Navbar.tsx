@@ -29,7 +29,7 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="fixed left-1/2 -translate-x-1/2 bottom-4 z-50">
+      <div className="fixed right-40 -translate-x-1/2 bottom-1/3 z-50">
         <FloatingDock
           items={[
             {
