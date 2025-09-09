@@ -54,10 +54,10 @@ public class PostVoteRepository : GenericRepository<PostVote>,  IPostVoteReposit
     }
     else
     {
-      return new ErrorDataResult<PostVote>(400, "Invalid vote value");
+      return new ErrorDataResult<PostVote>(400, "Geçersiz oy.");
     }
     
     await _dbContext.SaveChangesAsync();
-    return new SuccessDataResult<PostVote>("Post Vote created successfully.", result?.Entity);
+    return new SuccessDataResult<PostVote>("Oy başarıyla oluşturuldu.", result?.Entity);
   }
 }

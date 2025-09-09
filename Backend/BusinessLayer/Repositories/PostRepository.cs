@@ -17,10 +17,10 @@ public class PostRepository : GenericRepository<Post>,  IPostRepository
     if (result.Entity != null)
     {
       await _dbContext.SaveChangesAsync();
-      return new SuccessDataResult<Post>("Post created successfully.", result.Entity);
+      return new SuccessDataResult<Post>("Gönderi başarıyla oluşturuldu.", result.Entity);
     }
     
-    return new ErrorDataResult<Post>(500,"Failed to create post.");
+    return new ErrorDataResult<Post>(500,"Gönderi oluşturulamadı.");
   }
 
   public async Task<IDataResult<Post>> VotePost(Guid postId, int voteValue)
@@ -28,11 +28,11 @@ public class PostRepository : GenericRepository<Post>,  IPostRepository
     var post = await _dbSet.FindAsync(postId);
     if (post == null)
     {
-      return new ErrorDataResult<Post>(404, "Post not found.");
+      return new ErrorDataResult<Post>(404, "Gönderi bulunamadı.");
     }
     post.VoteScore += voteValue;
     await _dbContext.SaveChangesAsync();
-    return new SuccessDataResult<Post>("Post voted successfully.", post);
+    return new SuccessDataResult<Post>("Gönderi başarıyla oylandı.", post);
   }
   
 }

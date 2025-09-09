@@ -28,7 +28,7 @@ public class AuthDbService : IAuthDbService
     var existingUserResult = await _authRepository.GetUserByEmail(registerRequestDto.Email);
     if (existingUserResult.Success)
     {
-      return new ErrorDataResult<AppUser>(400, "User with this email already exists.");
+      return new ErrorDataResult<AppUser>(400, "Bu e-postaya sahip kullanıcı zaten var.");
     }
     
     var newUser = new AppUser

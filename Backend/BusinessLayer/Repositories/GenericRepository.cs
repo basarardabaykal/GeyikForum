@@ -19,6 +19,6 @@ public class GenericRepository<TEntity> : IGenericRepository<TEntity> where  TEn
     public async Task<IDataResult<List<TEntity>>> GetAll()
     {
       var result = await _dbSet.ToListAsync();
-      return new SuccessDataResult<List<TEntity>>("All items retrieved successfully.", result);
+      return new SuccessDataResult<List<TEntity>>("Tüm itemler başarıyla alındı.", result);
     }
 }

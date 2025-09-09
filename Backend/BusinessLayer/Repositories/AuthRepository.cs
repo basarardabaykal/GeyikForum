@@ -22,11 +22,11 @@ public class AuthRepository : IAuthRepository
     var user = await _userManager.FindByEmailAsync(email);
     if (user == null)
     {
-      return new ErrorDataResult<AppUser>(404, "No user was found with this email.");
+      return new ErrorDataResult<AppUser>(404, "Bu e-postaya sahip kullanıcı bulunamadı.");
     }
     else
     {
-      return new SuccessDataResult<AppUser>( "User with this email has been found successfully.", user);
+      return new SuccessDataResult<AppUser>( "Bu e-postaya sahip kullanıcı başarıyla bulundu.", user);
     }
   }
 
@@ -34,16 +34,16 @@ public class AuthRepository : IAuthRepository
   {
     if (string.IsNullOrEmpty(uid))
     {
-      return new ErrorDataResult<AppUser>(400, "Current user was not found.");
+      return new ErrorDataResult<AppUser>(400, "Geçerli kullanıcı bulunamadı.");
     }
     var user = await _userManager.FindByIdAsync(uid);
     if (user == null)
     {
-      return new ErrorDataResult<AppUser>(404, "Current user was not found.");
+      return new ErrorDataResult<AppUser>(404, "Geçerli kullanıcı bulunamadı.");
     }
     else
     {
-      return new SuccessDataResult<AppUser>( "Current user has been found successfully", user);
+      return new SuccessDataResult<AppUser>( "Geçerli kullanıcı başarıyla bulundu.", user);
     }
   }
   
@@ -52,11 +52,11 @@ public class AuthRepository : IAuthRepository
     var hasMatchedPasswords = await _userManager.CheckPasswordAsync(user, password);
     if (hasMatchedPasswords)
     {
-      return new SuccessDataResult<AppUser>("Successfully logged in.", user);
+      return new SuccessDataResult<AppUser>("Başarıyla giriş yapıldı.", user);
     }
     else
     {
-      return new ErrorDataResult<AppUser>(500, "Password is not correct.", user);
+      return new ErrorDataResult<AppUser>(500, "Şifre doğru değil.", user);
     }
   }
   
@@ -67,11 +67,11 @@ public class AuthRepository : IAuthRepository
     if (result.Succeeded)
     {
       var createdUser = await _userManager.FindByEmailAsync(user.Email);
-      return new SuccessDataResult<AppUser>("User has been created successfully.", createdUser);
+      return new SuccessDataResult<AppUser>("Kullanıcı başarıyla oluşturuldu.", createdUser);
     }
     else
     {
-      return new ErrorDataResult<AppUser>(400, "User creation failed.");
+      return new ErrorDataResult<AppUser>(400, "Kullanıcı oluşturma başarısız oldu.");
     }
   }
   
@@ -80,7 +80,7 @@ public class AuthRepository : IAuthRepository
     var user = await _userManager.FindByEmailAsync(email);
     if (user == null)
     {
-      return new ErrorDataResult<List<string>>(404, "User not found.");
+      return new ErrorDataResult<List<string>>(404, "Kullanıcı bulunamadı.");
     }
 
     var roles = await _userManager.GetRolesAsync(user);
@@ -89,7 +89,7 @@ public class AuthRepository : IAuthRepository
       return new ErrorDataResult<List<string>>(404, "Roles for this user was not found.");
     }
     
-    return new SuccessDataResult<List<string>>("User roles retrieved successfully.", roles.ToList());
+    return new SuccessDataResult<List<string>>("Kullanıcı rolleri başarıyla alındı.", roles.ToList());
   }
   
   public async Task<IDataResult<bool>> AssignRole(AppUser user, string role)
@@ -101,17 +101,17 @@ public class AuthRepository : IAuthRepository
 
     if (await _userManager.IsInRoleAsync(user, role))
     {
-      return new SuccessDataResult<bool>($"User already has role '{role}'.");
+      return new SuccessDataResult<bool>($"Kullanıcı zaten '{role}' rolüne sahip.");
     }
 
     var result = await _userManager.AddToRoleAsync(user, role);
     if (result.Succeeded)
     {
-      return new SuccessDataResult<bool>($"Role '{role}' has been assigned to user successfully.");
+      return new SuccessDataResult<bool>($"'{role}' rolü kullanıcıya başarıyla atandı.");
     }
     else
     {
-      return new ErrorDataResult<bool>(400, "Role assignment failed.");
+      return new ErrorDataResult<bool>(400, "Rol atama başarısız oldu.");
     }
   }
 }
