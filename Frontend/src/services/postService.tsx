@@ -1,5 +1,6 @@
 import type { PostVote } from "@/models/PostVote";
 import { api } from "./api";
+import { toast } from "react-hot-toast";
 import type { Post } from "@/models/Post";
 
 const CONTROLLER_NAME = "post";
@@ -13,9 +14,15 @@ export const postService = {
           Authorization: `Bearer ${token}`,
         }
       });
+
+      if (!response.data.success) {
+        toast.error(response.data.message)
+      }
+
       return response
     } catch (error) {
-      console.log(error) //replace with popup message etc
+      toast.error("Bir hata ile karşılaşıldı.")
+      return
     }
   },
 
@@ -27,9 +34,15 @@ export const postService = {
           Authorization: `Bearer ${token}`,
         }
       });
+
+      if (!response.data.success) {
+        toast.error(response.data.message)
+      }
+
       return response
     } catch (error) {
-      console.log(error) //replace with popup message etc
+      toast.error("Bir hata ile karşılaşıldı.")
+      return
     }
   },
 
@@ -41,9 +54,14 @@ export const postService = {
           Authorization: `Bearer ${token}`,
         }
       })
+
+      if (!response.data.success) {
+        toast.error(response.data.message)
+      }
+
       return response
     } catch (error) {
-      console.log(error) //replace with popup message etc
+      toast.error("Bir hata ile karşılaşıldı.")
     }
   }
 }

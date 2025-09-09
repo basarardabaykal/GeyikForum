@@ -18,8 +18,8 @@ import { useAuth } from "../context/AuthContext";
 import { authService } from "../services/authService";
 
 const loginSchema = z.object({
-  email: z.email("Invalid email adress").nonempty("Email Required"),
-  password: z.string("Invalid password").nonempty("Password required."),
+  email: z.email("Geçersiz e-posta").nonempty("E-posta boş olamaz."),
+  password: z.string("Geçersiz şifre").nonempty("Şifre boş olamaz."),
 })
 
 export default function Login() {
@@ -37,7 +37,7 @@ export default function Login() {
     const validation = loginSchema.safeParse({ email, password })
     if (!validation.success) {
       const issues = validation.error.issues
-      const firstError = issues[0]?.message || "Invalid input"
+      const firstError = issues[0]?.message || "Geçersiz Bilgiler"
       setErrorMessage(firstError)
       setIsError(true)
       return
@@ -56,7 +56,7 @@ export default function Login() {
       //backend validation errors
       if (response.data.errors && typeof response.data.errors === "object") {
         const allErrors = Object.values(response.data.errors).flat() as string[]
-        setErrorMessage(allErrors[0] || "Validation Error")
+        setErrorMessage(allErrors[0] || "Doğrulama Hatası")
       }
       else {
         setErrorMessage(response.data.message)
@@ -71,20 +71,20 @@ export default function Login() {
       <div className="flex justify-center items-center align-middle h-screen">
         <Card className="max-w-sm m-auto w-3/4">
           <CardHeader>
-            <CardTitle>Login to your account</CardTitle>
+            <CardTitle>Hesabınıza Giriş Yapın</CardTitle>
             <CardDescription>
-              Enter your email and password to login to your account
+              Hesabınıza giriş yapmak için e-posta ve şifrenizi girin
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form>
               <div className="flex flex-col gap-6">
                 <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">E-posta</Label>
                   <Input
                     id="email"
                     type="email"
-                    placeholder="m@example.com"
+                    placeholder="örnek@hacettepe.edu.tr"
                     required
                     value={email}
                     onChange={(e) => (setEmail(e.target.value))}
@@ -92,7 +92,7 @@ export default function Login() {
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password">Şifre</Label>
                   </div>
                   <Input id="password" type="password" required
                     value={password} onChange={(e) => (setPassword(e.target.value))} />
@@ -105,12 +105,12 @@ export default function Login() {
           </CardFooter>
           <CardFooter className="flex-col gap-2">
             <Button type="submit" onClick={handleSubmit} className="w-full">
-              Login
+              Giriş Yap
             </Button>
           </CardFooter>
           <CardFooter className="flex justify-center">
             <CardAction className="flex justify-center items-center">
-              <Button variant="link"><Link to={"/signup"}>Sign Up</Link> </Button>
+              <Button variant="link"><Link to={"/signup"}>Kayıt Ol</Link> </Button>
             </CardAction>
           </CardFooter>
         </Card>

@@ -1,4 +1,5 @@
 import { api } from "./api";
+import { toast } from "react-hot-toast";
 
 const CONTROLLER_NAME = "auth"
 
@@ -38,10 +39,15 @@ export const authService = {
             Authorization: `Bearer ${token}`,
           }
         })
-      return response
-    } catch (error) {
-      console.log(error) //replace with popup message etc
-    }
 
+      if (!response.data.success) {
+        toast.error(response.data.message)
+      }
+
+      return response
+    } catch (error: any) {
+      toast.error("Bir hata ile karşılaşıldı.")
+      return null
+    }
   }
 }

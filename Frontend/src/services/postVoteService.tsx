@@ -1,4 +1,5 @@
 import { api } from "./api";
+import { toast } from "react-hot-toast";
 
 const CONTROLLER_NAME = "PostVote"
 
@@ -11,9 +12,14 @@ export const postVoteService = {
           Authorization: `Bearer ${token}`,
         }
       })
+
+      if (!response.data.success) {
+        toast.error(response.data.message)
+      }
+
       return response
     } catch (error) {
-      console.log(error) //replace with popup message etc
+      toast.error("Bir hata ile karşılaşıldı.")
     }
   },
 }

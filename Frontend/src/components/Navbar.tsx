@@ -39,7 +39,7 @@ export default function Navbar() {
               }
             },
             {
-              title: "Profile",
+              title: "Profil",
               icon: <IconUser className="w-full h-full" />,
               onClick: () => {
                 navigate("/profile")
@@ -47,7 +47,7 @@ export default function Navbar() {
             },
             isAuthenticated ?
               {
-                title: "Logout",
+                title: "Çıkış",
                 icon: <IconLogout2 className="w-full h-full" />,
                 onClick: () => {
                   logout()
@@ -56,7 +56,7 @@ export default function Navbar() {
               } :
 
               {
-                title: "Login",
+                title: "Giriş",
                 icon: <IconLogin2 className="w-full h-full" />,
                 onClick: () => {
                   navigate("/login")
@@ -65,14 +65,14 @@ export default function Navbar() {
 
             darkMode ?
               {
-                title: "Bright Mode",
+                title: "Aydınlık Tema",
                 icon: <IconBrightnessDownFilled className="w-full h-full" />,
                 onClick: () => {
                   toggleDarkMode()
                 }
               } :
               {
-                title: "Dark Mode",
+                title: "Karanlık Tema",
                 icon: <IconBrightnessDown className="w-full h-full" />,
                 onClick: () => {
                   toggleDarkMode()

@@ -1,6 +1,7 @@
 import './App.css'
 import { Routes, Route } from "react-router-dom"
 import Navbar from './components/Navbar'
+import { Toaster } from 'react-hot-toast'
 import Homepage from './pages/Homepage'
 import Signup from './pages/Signup'
 import Login from './pages/Login'
@@ -9,6 +10,7 @@ function App() {
 
   return (
     <>
+      <Toaster position="top-right" />
       <Navbar></Navbar>
       <div>
         <Routes>

@@ -3,6 +3,7 @@ import { postService } from "../services/postService"
 import { postVoteService } from "../services/postVoteService"
 import { useAuth } from "@/context/AuthContext"
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import type { Post } from "../models/Post"
 import type { User } from "../models/User"
 import PostItem from "../components/PostItem"
@@ -81,7 +82,6 @@ export default function Homepage() {
     }
 
     const response = await postService.votePost(newPostVote)
-    console.log(response)
 
     if (response?.data?.data?.voteScore != undefined) {
       setPosts(prevPosts =>
@@ -113,14 +113,13 @@ export default function Homepage() {
     }
 
     const response = await postService.createPost(newPost)
-    console.log(response)
   }
 
 
   useEffect(() => {
     if (!isAuthenticated) {
       navigate("/login")
-      console.error("Login to see content.")
+      toast.error("İçerikleri görebilmek için giriş yapın.")
       return
     }
 
@@ -128,7 +127,7 @@ export default function Homepage() {
       try {
         await Promise.all([fetchUsers(), fetchPostVotes(), fetchPosts()])
       } catch (error) {
-        console.error('Error fetching data:', error)
+        toast.error("Veri aktarımında bir hatayla karşılaşıldı.")
       } finally {
         setLoading(false)
       }

@@ -18,22 +18,22 @@ import { set, z } from "zod"
 import { authService } from "../services/authService";
 
 const signupSchema = z.object({
-  email: z.email("Invalid email"),
+  email: z.email("Geçersiz e-posta"),
   password: z.string()
-    .min(6, "Password must have at least 6 characters.")
-    .max(64, "Password can not have more than 64 characters.")
-    .regex(/[0-9]/, "Password must contain at least one digit.")
-    .regex(/[A-Z]/, "Password must contain at least one uppercase letter.")
-    .regex(/[a-z]/, "Password must contain at least one lowercase letter.")
-    .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character."),
+    .min(6, "Şifre en az 6 karakter olmalıdır.")
+    .max(64, "Şifre 64 karakterden fazla olamaz.")
+    .regex(/[0-9]/, "Şifre en az bir rakam içermelidir.")
+    .regex(/[A-Z]/, "Şifre en az bir büyük harf içermelidir.")
+    .regex(/[a-z]/, "Şifre en az bir küçük harf içermelidir.")
+    .regex(/[^A-Za-z0-9]/, "Şifre en az bir özel karakter içermelidir."),
   confirmedPassword: z.string(),
   nickname: z.string()
-    .min(3, "Nickname must have at least 3 characters.")
-    .max(20, "Nickname can not have more than 20 characters.")
-    .regex(/^[a-zA-Z0-9_-]+$/, "Nickname can only contain letters, numbers, underscores, or hyphens")
-    .regex(/^(?![_-])(?!.*[_-]{2})(?!.*[_-]$).+$/, "Nickname cannot start/end with or contain consecutive special characters"),
+    .min(3, "Kullanıcı adı en az 3 karakter olmalıdır.")
+    .max(20, "Kullanıcı adı 20 karakterden fazla olamaz.")
+    .regex(/^[a-zA-Z0-9_-]+$/, "Kullanıcı adı sadece harf, rakam, alt çizgi veya tire içerebilir")
+    .regex(/^(?![_-])(?!.*[_-]{2})(?!.*[_-]$).+$/, "Kullanıcı adı özel karakterle başlayamaz/bitemez veya ardışık özel karakter içeremez"),
 }).refine((data) => data.password === data.confirmedPassword, {
-  message: "Passwords do not match",
+  message: "Şifreler eşleşmiyor",
   path: ["confirmedPassword"],
 })
 
@@ -57,7 +57,7 @@ export default function Signup() {
 
     if (!validation.success) {
       const issues = validation.error.issues
-      const firstError = issues[0]?.message || "Invalid input"
+      const firstError = issues[0]?.message || "Geçersiz Bilgiler"
       setErrorMessage(firstError)
       setIsError(true)
       return
@@ -82,7 +82,7 @@ export default function Signup() {
       //backend validation errors
       if (response.data.errors && typeof response.data.errors === "object") {
         const allErrors = Object.values(response.data.errors).flat() as string[]
-        setErrorMessage(allErrors[0] || "Validation Error")
+        setErrorMessage(allErrors[0] || "Doğrulama Hatası")
       }
       else {
         setErrorMessage(response.data.Message)
@@ -96,16 +96,16 @@ export default function Signup() {
       <div className="flex justify-center items-center align-middle h-screen">
         <Card className="w-3/4 max-w-sm m-auto">
           <CardHeader>
-            <CardTitle>Create a new account</CardTitle>
+            <CardTitle>Yeni hesap oluştur</CardTitle>
             <CardDescription>
-              Fill in your credentials to create a new account
+              Yeni bir hesap oluşturmak için bilgilerinizi doldurun
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form>
               <div className="flex flex-col gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email">E-posta</Label>
                   <Input
                     id="email"
                     type="email"
@@ -116,20 +116,20 @@ export default function Signup() {
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
-                    <Label htmlFor="password">Password</Label>
+                    <Label htmlFor="password">Şifre</Label>
                   </div>
                   <Input id="password" type="password" required
                     value={password} onChange={(e) => (setPassword(e.target.value))} />
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
-                    <Label htmlFor="confirmPassword">Confirm Password</Label>
+                    <Label htmlFor="confirmPassword">Şifreyi Onayla</Label>
                   </div>
                   <Input id="confirmPassword" type="password" required
                     value={confirmPassword} onChange={(e) => (setConfirmPassword(e.target.value))} />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="nickname">Nickname</Label>
+                  <Label htmlFor="nickname">Kullanıcı Adı</Label>
                   <Input
                     id="nickname"
                     type="text"
@@ -146,12 +146,12 @@ export default function Signup() {
           </CardFooter>
           <CardFooter className="flex-col gap-2">
             <Button type="submit" onClick={handleSubmit} className="w-full">
-              Sign up
+              Kayıt Ol
             </Button>
           </CardFooter>
           <CardFooter className="flex justify-center">
             <CardAction className="flex justify-center items-center">
-              <Button variant="link"><Link to={"/login"}>Login</Link> </Button>
+              <Button variant="link"><Link to={"/login"}>Giriş Yap</Link> </Button>
             </CardAction>
           </CardFooter>
         </Card>
