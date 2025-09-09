@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { href, Link, useNavigate } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
-//import { useTheme } from "../context/ThemeContext"
+import { useTheme } from "../context/ThemeContext"
 import { FloatingDock } from "./ui/floating-dock"
 import { IconHome, IconUser, IconLogin2, IconLogout2, IconBrightnessDownFilled, IconBrightnessDown } from "@tabler/icons-react";
 
@@ -9,8 +9,7 @@ import { IconHome, IconUser, IconLogin2, IconLogout2, IconBrightnessDownFilled, 
 export default function Navbar() {
   const navigate = useNavigate()
   const { isAuthenticated, logout } = useAuth()
-  //const { darkMode, toggleDarkMode } = useTheme()
-  const [darkMode, toggleDarkMode] = useState(false)
+  const { darkMode, toggleDarkMode } = useTheme()
 
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
@@ -69,14 +68,14 @@ export default function Navbar() {
                 title: "Bright Mode",
                 icon: <IconBrightnessDownFilled className="w-full h-full" />,
                 onClick: () => {
-                  toggleDarkMode(false)
+                  toggleDarkMode()
                 }
               } :
               {
                 title: "Dark Mode",
                 icon: <IconBrightnessDown className="w-full h-full" />,
                 onClick: () => {
-                  toggleDarkMode(true)
+                  toggleDarkMode()
                 }
               },
 
