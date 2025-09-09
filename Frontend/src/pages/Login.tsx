@@ -44,6 +44,7 @@ export default function Login() {
     }
 
     const response = await authService.login(email, password)
+
     if (response.data.success) {
       login(response.data.data.token)
       setIsError(false)

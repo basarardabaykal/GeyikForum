@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { postService } from "../services/postService"
 import { postVoteService } from "../services/postVoteService"
 import { useAuth } from "@/context/AuthContext"
+import { useNavigate } from "react-router-dom";
 import type { Post } from "../models/Post"
 import type { User } from "../models/User"
 import PostItem from "../components/PostItem"
@@ -12,48 +13,43 @@ import type { PostVote } from "../models/PostVote"
 
 
 export default function Homepage() {
-  const { user } = useAuth()
+  const { isAuthenticated, user } = useAuth()
+  const navigate = useNavigate()
   const [posts, setPosts] = useState<Post[]>([])
   const [users, setUsers] = useState<User[]>([])
   const [postVotes, setPostVotes] = useState<PostVote[]>([])
   const [loading, setLoading] = useState<boolean>(true)
 
   const fetchUsers = async () => {
-    try {
-      const response = await userService.getAll()
-      if (response.data.success) {
-        const mappedUsers: User[] = response.data.data
-        console.log(mappedUsers)
-        setUsers(mappedUsers)
-      }
-    } catch (error) {
-      console.error('Error fetching users:', error)
+    if (!isAuthenticated) {
+      navigate("/login")
+    }
+    const response = await userService.getAll()
+    if (response?.data.success) {
+      const mappedUsers: User[] = response.data.data
+      setUsers(mappedUsers)
     }
   }
 
   const fetchPostVotes = async (): Promise<void> => {
-    try {
-      const response = await postVoteService.getAll()
-      if (response.data.success) {
-        const mappedPostVotes: PostVote[] = response.data.data
-        console.log(mappedPostVotes)
-        setPostVotes(mappedPostVotes)
-      }
-    } catch (error) {
-      console.error('Error fetching post votes:', error)
+    if (!isAuthenticated) {
+      navigate("/login")
+    }
+    const response = await postVoteService.getAll()
+    if (response?.data.success) {
+      const mappedPostVotes: PostVote[] = response.data.data
+      setPostVotes(mappedPostVotes)
     }
   }
 
   const fetchPosts = async (): Promise<void> => {
-    try {
-      const response = await postService.getAll()
-      if (response.data.success) {
-        const mappedPosts: Post[] = response.data.data
-        console.log(mappedPosts)
-        setPosts(mappedPosts)
-      }
-    } catch (error) {
-      console.error('Error fetching posts:', error)
+    if (!isAuthenticated) {
+      navigate("/login")
+    }
+    const response = await postService.getAll()
+    if (response?.data.success) {
+      const mappedPosts: Post[] = response.data.data
+      setPosts(mappedPosts)
     }
   }
 
@@ -73,6 +69,10 @@ export default function Homepage() {
   }
 
   const handleVote = async (postId: string, newVote: number): Promise<void> => {
+    if (!isAuthenticated) {
+      navigate("/login")
+    }
+
     const newPostVote: PostVote = {
       id: "00000000-0000-0000-0000-000000000000",
       userId: user?.id || "00000000-0000-0000-0000-000000000000",
@@ -83,8 +83,6 @@ export default function Homepage() {
     const response = await postService.votePost(newPostVote)
     console.log(response)
 
-
-
     if (response?.data?.data?.voteScore != undefined) {
       setPosts(prevPosts =>
         prevPosts.map(post =>
@@ -94,7 +92,12 @@ export default function Homepage() {
     }
   }
 
+
   const handleCreatePost = async (parentId: string, depth: number, title: string, content: string): Promise<void> => {
+    if (!isAuthenticated) {
+      navigate("/login")
+    }
+
     const newPost: Post = {
       id: "00000000-0000-0000-0000-000000000000",
       userId: user?.id || "00000000-0000-0000-0000-000000000000",
@@ -112,6 +115,7 @@ export default function Homepage() {
     const response = await postService.createPost(newPost)
     console.log(response)
   }
+
 
   useEffect(() => {
     const fetchData = async () => {

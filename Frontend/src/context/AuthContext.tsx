@@ -3,6 +3,7 @@ import type { User } from "../models/User"
 import { jwtDecode } from "jwt-decode"
 import axios from "axios";
 import { authService } from "../services/authService";
+import { useNavigate } from "react-router-dom";
 //import { toast } from "react-hot-toast"
 
 interface DecodedToken {
@@ -22,6 +23,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate()
+
 
   const fetchUser = async () => {
     const token = localStorage.getItem("token")
@@ -32,6 +35,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (decoded.exp * 1000 < Date.now()) {
           logout()
           return
+        }
+
+        if (!isAuthenticated) {
+          navigate("/login")
         }
 
         const response = await authService.getCurrentUser()
