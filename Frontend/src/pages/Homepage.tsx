@@ -118,6 +118,12 @@ export default function Homepage() {
 
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login")
+      console.error("Login to see content.")
+      return
+    }
+
     const fetchData = async () => {
       try {
         await Promise.all([fetchUsers(), fetchPostVotes(), fetchPosts()])

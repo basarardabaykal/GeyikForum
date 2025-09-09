@@ -119,7 +119,7 @@ var app = builder.Build();
 app.UseMiddleware <GlobalExceptionHandlerMiddleware>();
 
 //cors
-app.UseCors("AllowAll");
+app.UseCors("FrontendPolicy");
 
 //app api test
 if (app.Environment.IsDevelopment())
