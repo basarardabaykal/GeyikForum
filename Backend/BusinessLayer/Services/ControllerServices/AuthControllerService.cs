@@ -95,6 +95,11 @@ public class AuthControllerService : IAuthControllerService
   {
     return await _authDbService.GetCurrentUser(uid);
   }
+
+  public async Task<IDataResult<object>> ConfirmEmail(ConfirmEmailRequestDto confirmEmailRequestDto)
+  {
+    return await _authDbService.ConfirmEmail(confirmEmailRequestDto);
+  }
   
   private string GenerateJwtToken(AppUser user, List<string> roles)
   {

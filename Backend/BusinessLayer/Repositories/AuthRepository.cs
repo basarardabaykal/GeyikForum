@@ -1,3 +1,4 @@
+using BusinessLayer.Dtos.Auth;
 using BusinessLayer.Interfaces.Repositories;
 using CoreLayer.Entities;
 using CoreLayer.Utilities.DataResults.Concretes;
@@ -71,6 +72,7 @@ public class AuthRepository : IAuthRepository
     }
     else
     {
+      Console.WriteLine(result.Errors.First());
       return new ErrorDataResult<AppUser>(400, "Kullanıcı oluşturma başarısız oldu.");
     }
   }
@@ -113,5 +115,28 @@ public class AuthRepository : IAuthRepository
     {
       return new ErrorDataResult<bool>(400, "Rol atama başarısız oldu.");
     }
+  }
+
+  public async Task<IDataResult<string>> GenerateEmailConfirmationToken(AppUser user)
+  {
+    var result = await  _userManager.GenerateEmailConfirmationTokenAsync(user);
+    return new SuccessDataResult<string>("E-posta doğrulama tokeni başarıyla oluşturuldu.", result);
+  }
+
+  public async Task<IDataResult<object>> ConfirmEmail(ConfirmEmailRequestDto confirmEmailRequestDto)
+  {
+    var userResult = await GetUserByUid(confirmEmailRequestDto.UserId.ToString());
+    if (!userResult.Success)
+    {
+      return new ErrorDataResult<object>(404, userResult.Message);
+    }
+    
+    var result = await _userManager.ConfirmEmailAsync(userResult.Data, confirmEmailRequestDto.Token);
+
+    if (!result.Succeeded)
+    {
+      return new ErrorDataResult<object>(500, "E-posta doğrulanamadı. Tekrar giriş yapmayı deneyin.");
+    }
+    return new SuccessDataResult<object>("E-posta başarıyla doğrulandı.");
   }
 }

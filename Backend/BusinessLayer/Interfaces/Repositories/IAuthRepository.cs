@@ -1,3 +1,4 @@
+using BusinessLayer.Dtos.Auth;
 using CoreLayer.Entities;
 using CoreLayer.Utilities.DataResults.Interfaces;
 
@@ -11,4 +12,6 @@ public interface IAuthRepository
   public Task<IDataResult<AppUser>> CheckPassword(AppUser user, string password);
   public Task<IDataResult<List<string>>> GetUserRoles(string email);
   public Task<IDataResult<bool>> AssignRole(AppUser user, string role);
+  public Task<IDataResult<string>> GenerateEmailConfirmationToken(AppUser user);
+  public Task<IDataResult<object>> ConfirmEmail(ConfirmEmailRequestDto confirmEmailRequestDto);
 }

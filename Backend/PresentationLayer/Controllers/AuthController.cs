@@ -32,6 +32,13 @@ public class AuthController : Controller
     return StatusCode(result.StatusCode, result);
   }
 
+  [HttpPatch("confirm-email")]
+  public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailRequestDto confirmEmailRequestDto)
+  {
+    var result = await _controllerService.ConfirmEmail(confirmEmailRequestDto);
+    return StatusCode(result.StatusCode, result);
+  }
+
   [HttpGet("get-current-user")]
   [Authorize]
   public async Task<IActionResult> GetCurrentUser()

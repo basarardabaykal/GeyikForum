@@ -10,6 +10,8 @@ using CoreLayer.Entities;
 using DataLayer;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using BusinessLayer.Interfaces.Services.OtherServices;
+using BusinessLayer.Services.OtherServices;
 using BusinessLayer.Validations;
 using DotNetEnv;
 using FluentValidation;
@@ -54,7 +56,6 @@ builder.Services.AddIdentityCore<AppUser>(options =>
         options.Password.RequiredUniqueChars = 1;   
         
         options.User.RequireUniqueEmail = true;
-        options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_";
     })
     .AddRoles<IdentityRole<Guid>>()
     .AddEntityFrameworkStores<AppDbContext>()
@@ -82,6 +83,7 @@ builder.Services.AddScoped(typeof(IPostVoteControllerService), typeof(PostVoteCo
 builder.Services.AddScoped(typeof(IAuthRepository), typeof(AuthRepository));
 builder.Services.AddScoped(typeof(IAuthDbService), typeof(AuthDbService));
 builder.Services.AddScoped(typeof(IAuthControllerService), typeof(AuthControllerService));
+builder.Services.AddScoped(typeof(IEmailService), typeof(EmailService));
 
 //fluent validation
 builder.Services.AddFluentValidationAutoValidation();
