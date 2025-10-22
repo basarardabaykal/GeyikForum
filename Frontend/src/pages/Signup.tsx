@@ -71,12 +71,8 @@ export default function Signup() {
     })
 
     if (response.data.success) {
-      login(response.data.data.token)
-      window.dispatchEvent(new Event("storage"))
       setIsError(false)
-      setErrorMessage(response.data.message)
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      navigate("/")
+      setErrorMessage("Kayıt başarılı! Lütfen e-postanızı doğrulayın ve ardından giriş yapın.")
     }
     else {
       //backend validation errors

@@ -45,26 +45,23 @@ export default function Login() {
 
     const response = await authService.login(email, password)
 
-    if (response.data.success) {
-      login(response.data.data.token)
-      setIsError(false)
-      setErrorMessage(response.data.message)
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      navigate("/")
-    }
-    else {
-      //backend validation errors
-      if (response.data.errors && typeof response.data.errors === "object") {
-        const allErrors = Object.values(response.data.errors).flat() as string[]
-        setErrorMessage(allErrors[0] || "Doğrulama Hatası")
-      }
-      else {
-        setErrorMessage(response.data.message)
-      }
-
+    // If backend blocks unverified users with 403 or similar message
+    if (!response.data?.success) {
+      const msg = response.data?.message || "Giriş başarısız."
+      const isUnverified = response.status === 403 || /doğrulanmamış|doğrulayın/i.test(msg)
       setIsError(true)
+      setErrorMessage(isUnverified
+        ? "E-posta adresiniz doğrulanmamış. Lütfen e-postanızı doğrulayıp tekrar giriş yapın."
+        : msg)
+      return
     }
 
+    // Success → proceed
+    login(response.data.data.token)
+    setIsError(false)
+    setErrorMessage(response.data.message)
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    navigate("/")
   }
   return (
     <>

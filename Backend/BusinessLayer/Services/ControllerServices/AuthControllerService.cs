@@ -67,6 +67,12 @@ public class AuthControllerService : IAuthControllerService
       return new ErrorDataResult<LoginResponseDto>(result.StatusCode, result.Message);
     }
 
+    // Block unverified users from receiving a token
+    if (!user.EmailConfirmed)
+    {
+      return new ErrorDataResult<LoginResponseDto>(403, "E-posta adresiniz doğrulanmamış. Lütfen e-postanızı doğrulayıp tekrar giriş yapın.");
+    }
+
     var rolesResult = await _authDbService.GetUserRoles(user.Email);
     var roles = rolesResult.Success ? rolesResult.Data : new List<string>();
 
