@@ -49,5 +49,19 @@ export const authService = {
       toast.error("Bir hata ile karşılaşıldı.")
       return null
     }
+  },
+
+  async verifyEmail(userId: string, token: string) {
+    try {
+      const response = await api.post(`/${CONTROLLER_NAME}/verify-email`, {
+        userId,
+        token,
+      })
+      return response
+    } catch (error: any) {
+      if (error.response) {
+        return error.response
+      }
+    }
   }
 }

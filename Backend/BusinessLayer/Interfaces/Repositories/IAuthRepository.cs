@@ -14,5 +14,5 @@ public interface IAuthRepository
   public Task<IDataResult<List<string>>> GetUserRoles(string email);
   public Task<IDataResult<bool>> AssignRole(AppUser user, string role);
   public Task<IDataResult<string>> GenerateEmailConfirmationToken(AppUser user);
-  public Task<IDataResult<object>> ConfirmEmail(ConfirmEmailRequestDto confirmEmailRequestDto);
+  public Task<IDataResult<object>> ConfirmEmail(string userId, string token);
 }

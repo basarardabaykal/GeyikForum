@@ -9,6 +9,8 @@ using CoreLayer.Entities;
 using CoreLayer.Utilities.DataResults.Concretes;
 using CoreLayer.Utilities.DataResults.Interfaces;
 using Microsoft.Extensions.Configuration;
+using System.Text;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace BusinessLayer.Services.DbServices;
 
@@ -24,7 +26,7 @@ public class AuthDbService : IAuthDbService
   {
     _authRepository = authRepository;
     _defaultRole = configuration.GetValue<string>("DefaultRole") ?? "User";
-    _frontendDomain = configuration.GetValue<string>("FrontendDomain");
+    _frontendDomain = configuration.GetValue<string>("FRONTEND_URL");
     _mapper = mapper;
     _emailService = emailService;
   }
@@ -65,7 +67,7 @@ public class AuthDbService : IAuthDbService
       //sending verification email.
       var verificationResult = await _authRepository.GenerateEmailConfirmationToken(newUser);
       var token = verificationResult.Data;
-      var encodedToken = WebUtility.UrlEncode(token);
+      var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
       var confirmationUrl = $"{_frontendDomain}/verify-email?userId={newUser.Id}&token={encodedToken}";
       await _emailService.SendEmailAsync(newUser.Email, "Geyik Forum E-posta Onayı", 
         $"Linke tıklayarak hesabınızı doğrulayın: <a href='{confirmationUrl}'>Doğrula</a>");
@@ -103,7 +105,7 @@ public class AuthDbService : IAuthDbService
 
   public async Task<IDataResult<object>> ConfirmEmail(ConfirmEmailRequestDto confirmEmailRequestDto)
   {
-    return await _authRepository.ConfirmEmail(confirmEmailRequestDto);
+    return await _authRepository.ConfirmEmail(confirmEmailRequestDto.UserId.ToString(),  confirmEmailRequestDto.Token);
   }
   
   public async Task<IDataResult<List<string>>> GetUserRoles(string email)

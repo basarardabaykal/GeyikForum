@@ -38,6 +38,13 @@ public class AuthController : Controller
     var result = await _controllerService.ConfirmEmail(confirmEmailRequestDto);
     return StatusCode(result.StatusCode, result);
   }
+  
+  [HttpPost("verify-email")]
+  public async Task<IActionResult> VerifyEmail([FromBody] ConfirmEmailRequestDto confirmEmailRequestDto)
+  {
+    var result = await _controllerService.ConfirmEmail(confirmEmailRequestDto);
+    return StatusCode(result.StatusCode, result);
+  }
 
   [HttpGet("get-current-user")]
   [Authorize]

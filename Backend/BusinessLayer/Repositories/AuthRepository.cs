@@ -1,3 +1,5 @@
+using System.Net;
+using System.Text;
 using BusinessLayer.Dtos.Auth;
 using BusinessLayer.Interfaces.Repositories;
 using CoreLayer.Entities;
@@ -5,6 +7,7 @@ using CoreLayer.Utilities.DataResults.Concretes;
 using CoreLayer.Utilities.DataResults.Interfaces;
 using DataLayer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLayer.Repositories;
@@ -140,20 +143,37 @@ public class AuthRepository : IAuthRepository
     return new SuccessDataResult<string>("E-posta doğrulama tokeni başarıyla oluşturuldu.", result);
   }
 
-  public async Task<IDataResult<object>> ConfirmEmail(ConfirmEmailRequestDto confirmEmailRequestDto)
+  public async Task<IDataResult<object>> ConfirmEmail(string userId, string token)
   {
-    var userResult = await GetUserByUid(confirmEmailRequestDto.UserId.ToString());
-    if (!userResult.Success)
+    var user = await _userManager.FindByIdAsync(userId);
+    if (user is null)
     {
-      return new ErrorDataResult<object>(404, userResult.Message);
+      return new ErrorDataResult<object>(404, "Kullanıcı bulunamadı.");
     }
-    
-    var result = await _userManager.ConfirmEmailAsync(userResult.Data, confirmEmailRequestDto.Token);
 
+    if (user.EmailConfirmed)
+    {
+      return new SuccessDataResult<object>("E-posta zaten doğrulanmış.", new { userId = user.Id });
+    }
+
+    string decodedToken = token?.Trim() ?? string.Empty;
+    try
+    {
+      decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(decodedToken));
+    }
+    catch
+    {
+      // Fallback for old links or mail clients
+      decodedToken = WebUtility.UrlDecode(decodedToken).Replace(' ', '+');
+    }
+
+    var result = await _userManager.ConfirmEmailAsync(user, decodedToken);
     if (!result.Succeeded)
     {
-      return new ErrorDataResult<object>(500, "E-posta doğrulanamadı. Tekrar giriş yapmayı deneyin.");
+      var errors = string.Join("; ", result.Errors.Select(e => e.Description));
+      return new ErrorDataResult<object>(400, $"Doğrulama başarısız.");
     }
-    return new SuccessDataResult<object>("E-posta başarıyla doğrulandı.");
+
+    return new SuccessDataResult<object>("E-posta başarıyla doğrulandı.", new { userId = user.Id });
   }
 }
