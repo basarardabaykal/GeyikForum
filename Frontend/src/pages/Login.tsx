@@ -11,7 +11,6 @@ import { Button } from "../components/ui/button"
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
 import { useState } from "react";
-import axios from "axios"
 import { Link, useNavigate } from "react-router-dom";
 import { z } from "zod"
 import { useAuth } from "../context/AuthContext";
@@ -108,6 +107,16 @@ export default function Login() {
           <CardFooter className="flex justify-center">
             <CardAction className="flex justify-center items-center">
               <Button variant="link"><Link to={"/signup"}>Kayıt Ol</Link> </Button>
+            </CardAction>
+          </CardFooter>
+          <CardFooter className="flex justify-center">
+            <CardAction className="flex justify-center items-center">
+              <Button
+                variant="link"
+                onClick={() => navigate('/forgot-password')}
+              >
+                Şifrenizi mi unuttunuz?
+              </Button>
             </CardAction>
           </CardFooter>
         </Card>

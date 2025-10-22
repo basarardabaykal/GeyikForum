@@ -106,6 +106,16 @@ public class AuthControllerService : IAuthControllerService
   {
     return await _authDbService.ConfirmEmail(confirmEmailRequestDto);
   }
+
+  public async Task<IDataResult<object>> ForgotPassword(ForgotPasswordRequestDto dto)
+  {
+    return await _authDbService.ForgotPassword(dto);
+  }
+
+  public async Task<IDataResult<object>> ResetPassword(ResetPasswordRequestDto dto)
+  {
+    return await _authDbService.ResetPassword(dto);
+  }
   
   private string GenerateJwtToken(AppUser user, List<string> roles)
   {

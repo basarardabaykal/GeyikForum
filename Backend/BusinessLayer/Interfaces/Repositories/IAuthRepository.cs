@@ -15,4 +15,6 @@ public interface IAuthRepository
   public Task<IDataResult<bool>> AssignRole(AppUser user, string role);
   public Task<IDataResult<string>> GenerateEmailConfirmationToken(AppUser user);
   public Task<IDataResult<object>> ConfirmEmail(string userId, string token);
+  public Task<IDataResult<string>> GeneratePasswordResetToken(AppUser user);
+  public Task<IDataResult<object>> ResetPassword(string userId, string token, string newPassword);
 }

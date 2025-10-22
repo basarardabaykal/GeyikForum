@@ -12,4 +12,6 @@ public interface IAuthDbService
   public Task<IDataResult<AppUserDto>> GetCurrentUser(string uid);
   public Task<IDataResult<object>> ConfirmEmail(ConfirmEmailRequestDto confirmEmailRequestDto);
   public Task<IDataResult<List<string>>> GetUserRoles(string email);
+  public Task<IDataResult<object>> ForgotPassword(ForgotPasswordRequestDto dto);
+  public Task<IDataResult<object>> ResetPassword(ResetPasswordRequestDto dto);
 }

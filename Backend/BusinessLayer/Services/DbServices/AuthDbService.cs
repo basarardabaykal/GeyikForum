@@ -1,4 +1,5 @@
 using System.Net;
+using System.Text;
 using AutoMapper;
 using BusinessLayer.Dtos;
 using BusinessLayer.Dtos.Auth;
@@ -8,9 +9,8 @@ using BusinessLayer.Interfaces.Services.OtherServices;
 using CoreLayer.Entities;
 using CoreLayer.Utilities.DataResults.Concretes;
 using CoreLayer.Utilities.DataResults.Interfaces;
-using Microsoft.Extensions.Configuration;
-using System.Text;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 
 namespace BusinessLayer.Services.DbServices;
 
@@ -111,5 +111,34 @@ public class AuthDbService : IAuthDbService
   public async Task<IDataResult<List<string>>> GetUserRoles(string email)
   {
     return await _authRepository.GetUserRoles(email);
+  }
+
+  public async Task<IDataResult<object>> ForgotPassword(ForgotPasswordRequestDto dto)
+  {
+    // Not revealing whether the email exists for security reasons
+    var genericOk = new SuccessDataResult<object>("Eğer e-posta kayıtlıysa, şifre sıfırlama bağlantısı gönderildi.");
+
+    var userResult = await _authRepository.GetUserByEmail(dto.Email);
+    if (!userResult.Success || userResult.Data is null)
+      return genericOk;
+
+    var user = userResult.Data;
+    var tokenResult = await _authRepository.GeneratePasswordResetToken(user);
+    if (!tokenResult.Success)
+      return genericOk;
+
+    var token = tokenResult.Data;
+    var encoded = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+    var resetUrl = $"{_frontendDomain}/reset-password?userId={user.Id}&token={encoded}";
+
+    var body = $"Şifrenizi sıfırlamak için aşağıdaki bağlantıya tıklayın:<br/><a href='{WebUtility.HtmlEncode(resetUrl)}'>Şifreyi Sıfırla</a>";
+    await _emailService.SendEmailAsync(user.Email, "Geyik Forum Şifre Sıfırlama", body);
+
+    return genericOk;
+  }
+
+  public async Task<IDataResult<object>> ResetPassword(ResetPasswordRequestDto dto)
+  {
+    return await _authRepository.ResetPassword(dto.UserId.ToString(), dto.Token, dto.NewPassword);
   }
 }

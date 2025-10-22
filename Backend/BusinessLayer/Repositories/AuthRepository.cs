@@ -1,6 +1,5 @@
 using System.Net;
 using System.Text;
-using BusinessLayer.Dtos.Auth;
 using BusinessLayer.Interfaces.Repositories;
 using CoreLayer.Entities;
 using CoreLayer.Utilities.DataResults.Concretes;
@@ -175,5 +174,37 @@ public class AuthRepository : IAuthRepository
     }
 
     return new SuccessDataResult<object>("E-posta başarıyla doğrulandı.", new { userId = user.Id });
+  }
+
+  public async Task<IDataResult<string>> GeneratePasswordResetToken(AppUser user)
+  {
+    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+    return new SuccessDataResult<string>("Token üretildi.", token);
+  }
+
+  public async Task<IDataResult<object>> ResetPassword(string userId, string token, string newPassword)
+  {
+    var user = await _userManager.FindByIdAsync(userId);
+    if (user is null)
+      return new ErrorDataResult<object>(404, "Kullanıcı bulunamadı.");
+
+    string decoded = token?.Trim() ?? string.Empty;
+    try
+    {
+      decoded = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(decoded));
+    }
+    catch
+    {
+      decoded = WebUtility.UrlDecode(decoded).Replace(' ', '+');
+    }
+
+    var result = await _userManager.ResetPasswordAsync(user, decoded, newPassword);
+    if (!result.Succeeded)
+    {
+      var errors = string.Join("; ", result.Errors.Select(e => e.Description));
+      return new ErrorDataResult<object>(400, $"Şifre sıfırlama başarısız. {errors}");
+    }
+
+    return new SuccessDataResult<object>("Şifre başarıyla sıfırlandı.", new { userId = user.Id });
   }
 }

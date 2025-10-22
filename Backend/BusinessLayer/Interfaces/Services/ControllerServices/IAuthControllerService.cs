@@ -10,4 +10,6 @@ public interface IAuthControllerService
   public Task<IDataResult<LoginResponseDto>> Login(LoginRequestDto loginDto);
   public Task<IDataResult<AppUserDto>> GetCurrentUser(string jwtToken);
   public Task<IDataResult<object>> ConfirmEmail(ConfirmEmailRequestDto confirmEmailRequestDto);
+  public Task<IDataResult<object>> ForgotPassword(ForgotPasswordRequestDto dto);
+  public Task<IDataResult<object>> ResetPassword(ResetPasswordRequestDto dto);
 }

@@ -46,6 +46,20 @@ public class AuthController : Controller
     return StatusCode(result.StatusCode, result);
   }
 
+  [HttpPost("forgot-password")]
+  public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequestDto dto)
+  {
+    var result = await _controllerService.ForgotPassword(dto);
+    return StatusCode(result.StatusCode, result);
+  }
+
+  [HttpPost("reset-password")]
+  public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestDto dto)
+  {
+    var result = await _controllerService.ResetPassword(dto);
+    return StatusCode(result.StatusCode, result);
+  }
+
   [HttpGet("get-current-user")]
   [Authorize]
   public async Task<IActionResult> GetCurrentUser()

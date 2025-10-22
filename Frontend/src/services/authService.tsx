@@ -63,5 +63,25 @@ export const authService = {
         return error.response
       }
     }
+  },
+
+  async forgotPassword(email: string) {
+    try {
+      const response = await api.post(`/${CONTROLLER_NAME}/forgot-password`, { email })
+      return response
+    } catch (error: any) {
+      if (error.response) return error.response
+    }
+  },
+
+  async resetPassword(userId: string, token: string, newPassword: string, confirmPassword: string) {
+    try {
+      const response = await api.post(`/${CONTROLLER_NAME}/reset-password`, {
+        userId, token, newPassword, confirmPassword
+      })
+      return response
+    } catch (error: any) {
+      if (error.response) return error.response
+    }
   }
 }
