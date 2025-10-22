@@ -31,10 +31,16 @@ public class AuthDbService : IAuthDbService
   
   public async Task<IDataResult<AppUser>> Register(RegisterRequestDto registerRequestDto)
   {
-    var existingUserResult = await _authRepository.GetUserByEmail(registerRequestDto.Email);
-    if (existingUserResult.Success)
+    var existingUserResultEmail = await _authRepository.GetUserByEmail(registerRequestDto.Email);
+    if (existingUserResultEmail.Success)
     {
       return new ErrorDataResult<AppUser>(400, "Bu e-postaya sahip kullanıcı zaten var.");
+    }
+
+    var existingUserResultNickname = await _authRepository.GetUserByNickname(registerRequestDto.Nickname);
+    if (existingUserResultNickname.Success)
+    {
+      return new ErrorDataResult<AppUser>(400, "Bu kullanıcı adı zaten alınmış.");
     }
     
     var newUser = new AppUser

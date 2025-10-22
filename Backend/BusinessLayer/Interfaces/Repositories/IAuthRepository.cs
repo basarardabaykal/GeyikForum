@@ -8,6 +8,7 @@ public interface IAuthRepository
 {
   public Task<IDataResult<AppUser>> CreateUser(AppUser user,  string password);
   public Task<IDataResult<AppUser>> GetUserByEmail(string email);
+  public Task<IDataResult<AppUser>> GetUserByNickname(string nickname);
   public Task<IDataResult<AppUser>> GetUserByUid(string uid);
   public Task<IDataResult<AppUser>> CheckPassword(AppUser user, string password);
   public Task<IDataResult<List<string>>> GetUserRoles(string email);

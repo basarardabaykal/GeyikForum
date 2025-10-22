@@ -3,17 +3,21 @@ using BusinessLayer.Interfaces.Repositories;
 using CoreLayer.Entities;
 using CoreLayer.Utilities.DataResults.Concretes;
 using CoreLayer.Utilities.DataResults.Interfaces;
+using DataLayer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLayer.Repositories;
 
 public class AuthRepository : IAuthRepository
 {
+  protected readonly AppDbContext _dbContext;
   private readonly UserManager<AppUser> _userManager;
   private readonly RoleManager<IdentityRole<Guid>> _roleManager;
 
-  public AuthRepository(UserManager<AppUser> userManager , RoleManager<IdentityRole<Guid>> roleManager)
+  public AuthRepository(AppDbContext dbContext, UserManager<AppUser> userManager , RoleManager<IdentityRole<Guid>> roleManager)
   {
+    _dbContext = dbContext;
     _userManager = userManager;
     _roleManager = roleManager;
   }
@@ -28,6 +32,19 @@ public class AuthRepository : IAuthRepository
     else
     {
       return new SuccessDataResult<AppUser>( "Bu e-postaya sahip kullanıcı başarıyla bulundu.", user);
+    }
+  }
+
+  public async Task<IDataResult<AppUser>> GetUserByNickname(string nickname)
+  {
+    var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Nickname == nickname);
+    if (user == null)
+    {
+      return new ErrorDataResult<AppUser>(404, "Bu kullanıcı adına sahip kullanıcı bulunamadı.");
+    }
+    else
+    {
+      return new SuccessDataResult<AppUser>( "Bu kullanıcı adına sahip kullanıcı başarıyla bulundu.", user);
     }
   }
 

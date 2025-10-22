@@ -85,7 +85,7 @@ export default function Signup() {
         setErrorMessage(allErrors[0] || "Doğrulama Hatası")
       }
       else {
-        setErrorMessage(response.data.Message)
+        setErrorMessage(response.data.message)
       }
 
       setIsError(true)
