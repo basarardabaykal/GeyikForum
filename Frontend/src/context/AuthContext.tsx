@@ -37,10 +37,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           return
         }
 
-        if (!isAuthenticated) {
-          navigate("/login")
-        }
-
         const response = await authService.getCurrentUser()
 
         if (!response) {
