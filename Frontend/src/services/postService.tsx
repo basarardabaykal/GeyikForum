@@ -63,5 +63,47 @@ export const postService = {
     } catch (error) {
       toast.error("Bir hata ile karşılaşıldı.")
     }
-  }
+  },
+
+  async setPinStatus(postId: string, isPinned: boolean, userId: string) {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await api.patch(`/${CONTROLLER_NAME}/pin-post`, {
+        postId,
+        userId,
+        isPinned,
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (!response.data.success) {
+        toast.error(response.data.message);
+      }
+      return response;
+    } catch (error) {
+      toast.error("Bir hata ile karşılaşıldı.");
+      return;
+    }
+  },
+
+  async setDeleteStatus(postId: string, isDeleted: boolean, userId: string) {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await api.patch(`/${CONTROLLER_NAME}/delete-post`, {
+        postId,
+        userId,
+        isDeleted,
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (!response.data.success) {
+        toast.error(response.data.message);
+      }
+      return response;
+    } catch (error) {
+      toast.error("Bir hata ile karşılaşıldı.");
+      return;
+    }
+  },
 }

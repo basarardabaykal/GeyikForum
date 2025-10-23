@@ -21,6 +21,9 @@ export default function Homepage() {
   const [postVotes, setPostVotes] = useState<PostVote[]>([])
   const [loading, setLoading] = useState<boolean>(true)
 
+  const ZERO_GUID = "00000000-0000-0000-0000-000000000000";
+  const isAdmin = !!(user?.isAdmin || (user?.roles || []).includes("Admin"));
+
   const fetchUsers = async () => {
     if (!isAuthenticated) {
       navigate("/login")
@@ -115,6 +118,29 @@ export default function Homepage() {
     const response = await postService.createPost(newPost)
   }
 
+  const handleTogglePin = async (postId: string, current: boolean) => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    const response = await postService.setPinStatus(postId, !current, user?.id || ZERO_GUID);
+    if (response?.data?.success) {
+      const updated = response.data.data as Post;
+      setPosts(prev => prev.map(p => p.id === postId ? { ...p, isPinned: updated.isPinned } : p));
+    }
+  };
+
+  const handleToggleDelete = async (postId: string, current: boolean) => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    const response = await postService.setDeleteStatus(postId, !current, user?.id || ZERO_GUID);
+    if (response?.data?.success) {
+      const updated = response.data.data as Post;
+      setPosts(prev => prev.map(p => p.id === postId ? { ...p, isDeleted: updated.isDeleted } : p));
+    }
+  };
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -183,6 +209,9 @@ export default function Homepage() {
                 getUserNickname={getUserNickname}
                 getUserVoteForPost={getUserVoteForPost}
                 onSubmitReply={handleCreatePost}
+                isAdmin={isAdmin}
+                onTogglePin={handleTogglePin}
+                onToggleDelete={handleToggleDelete}
               />
             ))}
           </div>

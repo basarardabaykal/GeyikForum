@@ -38,4 +38,18 @@ public class PostDbService : GenericDbService<PostDto, Post>, IPostDbService
     var postDto = _mapper.Map<PostDto>(result.Data);
     return new SuccessDataResult<PostDto>(result.Message, postDto);
   }
+
+  public async Task<IDataResult<PostDto>> SetPinStatus(Guid postId, bool isPinned)
+  {
+    var updated = await _repository.SetPinStatus(postId, isPinned);
+    if (!updated.Success) return new ErrorDataResult<PostDto>(updated.StatusCode, updated.Message);
+    return new SuccessDataResult<PostDto>(updated.Message, _mapper.Map<PostDto>(updated.Data));
+  }
+
+  public async Task<IDataResult<PostDto>> SetDeleteStatus(Guid postId, bool isDeleted)
+  {
+    var updated = await _repository.SetDeleteStatus(postId, isDeleted);
+    if (!updated.Success) return new ErrorDataResult<PostDto>(updated.StatusCode, updated.Message);
+    return new SuccessDataResult<PostDto>(updated.Message, _mapper.Map<PostDto>(updated.Data));
+  }
 }

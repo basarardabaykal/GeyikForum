@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using BusinessLayer.Dtos;
 using BusinessLayer.Interfaces.Services.ControllerServices;
 using BusinessLayer.Interfaces.Services.DbServices;
+using CoreLayer.Entities;
 using CoreLayer.Utilities.DataResults.Concretes;
 using CoreLayer.Utilities.DataResults.Interfaces;
 using DataLayer;
@@ -79,5 +80,23 @@ public class PostControllerService : GenericControllerService<PostDto>,  IPostCo
         
         await transaction.CommitAsync();
         return postResult;
+    }
+
+    public async Task<IDataResult<PostDto>> SetPinStatus(PostPinRequestDto dto)
+    {
+        var user = await _dbContext.Set<AppUser>().FindAsync(dto.UserId);
+        if (user is null) return new ErrorDataResult<PostDto>(403, "Yetkiniz yok.");
+        if (!user.IsAdmin) return new ErrorDataResult<PostDto>(403, "Yetkiniz yok.");
+
+        return await _postDbService.SetPinStatus(dto.PostId, dto.IsPinned);
+    }
+
+    public async Task<IDataResult<PostDto>> SetDeleteStatus(PostDeleteRequestDto dto)
+    {
+        var user = await _dbContext.Set<AppUser>().FindAsync(dto.UserId);
+        if (user is null) return new ErrorDataResult<PostDto>(403, "Yetkiniz yok.");
+        if (!user.IsAdmin) return new ErrorDataResult<PostDto>(403, "Yetkiniz yok.");
+
+        return await _postDbService.SetDeleteStatus(dto.PostId, dto.IsDeleted);
     }
 }

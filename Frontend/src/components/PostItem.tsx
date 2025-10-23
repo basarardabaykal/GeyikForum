@@ -1,6 +1,6 @@
 import type { Post } from "../models/Post";
 import VoteButtons from "./VoteButtons";
-import { MessageCircle, Pin, Edit } from "lucide-react"
+import { MessageCircle, Pin, Edit, Trash2, RotateCcw } from "lucide-react"
 import PostCreator from "./PostCreator";
 import { useState } from "react";
 
@@ -11,11 +11,13 @@ interface PostItemProps {
   onVote: (postId: string, newVote: number) => void;
   getUserNickname: (userId: string) => string;
   getUserVoteForPost: (postId: string) => number;
-  //for submittin a reply to this post
   onSubmitReply: (parentId: string, depth: number, title: string, content: string) => void;
+  isAdmin?: boolean;
+  onTogglePin?: (postId: string, current: boolean) => void;
+  onToggleDelete?: (postId: string, current: boolean) => void;
 }
 
-export default function PostItem({ post, posts, onVote, getUserNickname, getUserVoteForPost, onSubmitReply }: PostItemProps) {
+export default function PostItem({ post, posts, onVote, getUserNickname, getUserVoteForPost, onSubmitReply, isAdmin, onTogglePin, onToggleDelete }: PostItemProps) {
   const isMainPost = post.parentId === null
   const replies = posts.filter(p => p.parentId === post.id).sort((a, b) => b.voteScore - a.voteScore)
 
@@ -70,6 +72,34 @@ export default function PostItem({ post, posts, onVote, getUserNickname, getUser
             {post.userId === 'currentUser' && (
               <button className="hover:text-gray-800">Edit</button>
             )}
+
+            {/* Admin actions */}
+            {isAdmin && (
+              <div className="ml-auto flex items-center gap-3">
+                <button
+                  className={`flex items-center gap-1 hover:text-gray-800 ${post.isPinned ? 'text-blue-700' : ''} disabled:opacity-50`}
+                  onClick={() => onTogglePin && onTogglePin(post.id, post.isPinned)}
+                  disabled={!isMainPost || post.isDeleted}
+                  title={
+                    !isMainPost
+                      ? "Yorumlar sabitlenemez"
+                      : post.isDeleted
+                        ? "Silinmiş gönderi sabitlenemez"
+                        : (post.isPinned ? "Unpin" : "Pin")
+                  }
+                >
+                  <Pin size={16} /> {post.isPinned ? "Unpin" : "Pin"}
+                </button>
+
+                <button
+                  className={`flex items-center gap-1 hover:text-gray-800 ${post.isDeleted ? 'text-green-700' : 'text-red-700'}`}
+                  onClick={() => onToggleDelete && onToggleDelete(post.id, post.isDeleted)}
+                >
+                  {post.isDeleted ? <RotateCcw size={16} /> : <Trash2 size={16} />}
+                  {post.isDeleted ? "Restore" : "Delete"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -85,6 +115,9 @@ export default function PostItem({ post, posts, onVote, getUserNickname, getUser
           getUserNickname={getUserNickname}
           getUserVoteForPost={getUserVoteForPost}
           onSubmitReply={onSubmitReply}
+          isAdmin={isAdmin}
+          onTogglePin={onTogglePin}
+          onToggleDelete={onToggleDelete}
         />
       ))}
     </div>

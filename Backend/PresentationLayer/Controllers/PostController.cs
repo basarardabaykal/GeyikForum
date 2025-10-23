@@ -39,5 +39,20 @@ public class PostController : Controller
     var result = await _postControllerService.VotePost(postVoteDto);
     return StatusCode(result.StatusCode, result);
   }
-  
+
+  [HttpPatch("pin-post")]
+  [Authorize(Roles = "Admin")]
+  public async Task<IActionResult> PinPost([FromBody] PostPinRequestDto dto)
+  {
+    var result = await _postControllerService.SetPinStatus(dto);
+    return StatusCode(result.StatusCode, result);
+  }
+
+  [HttpPatch("delete-post")]
+  [Authorize(Roles = "Admin")]
+  public async Task<IActionResult> DeletePost([FromBody] PostDeleteRequestDto dto)
+  {
+    var result = await _postControllerService.SetDeleteStatus(dto);
+    return StatusCode(result.StatusCode, result);
+  }
 }

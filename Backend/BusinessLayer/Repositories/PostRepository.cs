@@ -1,9 +1,10 @@
-
 using BusinessLayer.Interfaces.Repositories;
 using CoreLayer.Entities;
 using CoreLayer.Utilities.DataResults.Concretes;
 using CoreLayer.Utilities.DataResults.Interfaces;
 using DataLayer;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLayer.Repositories;
 
@@ -34,5 +35,28 @@ public class PostRepository : GenericRepository<Post>,  IPostRepository
     await _dbContext.SaveChangesAsync();
     return new SuccessDataResult<Post>("Gönderi başarıyla oylandı.", post);
   }
-  
+
+  public async Task<IDataResult<Post>> SetPinStatus(Guid postId, bool isPinned)
+  {
+    var post = await _dbContext.Set<Post>().FirstOrDefaultAsync(p => p.Id == postId);
+    if (post.ParentId != null) return new ErrorDataResult<Post>(400, "Yorumlar sabitlenemez.");
+
+    post.IsPinned = isPinned;
+    post.UpdatedAt = DateTime.UtcNow;
+    await _dbContext.SaveChangesAsync();
+
+    return new SuccessDataResult<Post>(isPinned ? "Gönderi sabitlendi" : "Gönderi sabitlenmesi kaldırıldı.", post);
+  }
+
+  public async Task<IDataResult<Post>> SetDeleteStatus(Guid postId, bool isDeleted)
+  {
+    var post = await _dbContext.Set<Post>().FirstOrDefaultAsync(p => p.Id == postId);
+    if (post is null) return new ErrorDataResult<Post>(StatusCodes.Status404NotFound, "Post not found");
+
+    post.IsDeleted = isDeleted;
+    post.UpdatedAt = DateTime.UtcNow;
+    await _dbContext.SaveChangesAsync();
+
+    return new SuccessDataResult<Post>(isDeleted ? "Gönderi silindi." : "Gönderi tekrar açıldı.", post);
+  }
 }
