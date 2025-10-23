@@ -16,6 +16,7 @@ import { Label } from "../components/ui/label"
 import { Link, useNavigate } from "react-router-dom";
 import { set, z } from "zod"
 import { authService } from "../services/authService";
+import { Loader2 } from "lucide-react"
 
 const signupSchema = z.object({
   email: z.email("Geçersiz e-posta"),
@@ -46,10 +47,12 @@ export default function Signup() {
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
 
-  const [errorMessage, setErrorMessage] = useState("")
   const [isError, setIsError] = useState<boolean>(false)
+  const [errorMessage, setErrorMessage] = useState<string>("")
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
 
   const handleSubmit = async () => {
+    if (isSubmitting) return;
     setErrorMessage("")
     setIsError(false);
 
@@ -63,30 +66,30 @@ export default function Signup() {
       return
     }
 
-    const response = await authService.register({
-      email: email,
-      password: password,
-      confirmPassword: confirmPassword,
-      nickname: nickname,
-    })
+    setIsSubmitting(true) // NEW
+    try {
+      const response = await authService.register({ email, password, confirmPassword, nickname })
+      if (!response?.data?.success) {
+        //backend validation errors
+        if (response.data.errors && typeof response.data.errors === "object") {
+          const allErrors = Object.values(response.data.errors).flat() as string[]
+          setErrorMessage(allErrors[0] || "Doğrulama Hatası")
+        }
+        else {
+          setErrorMessage(response.data.message)
+        }
 
-    if (response.data.success) {
+        setIsError(true)
+        return
+      }
       setIsError(false)
+      setErrorMessage(response.data.message)
       setErrorMessage("Kayıt başarılı! Lütfen e-postanızı doğrulayın ve ardından giriş yapın.")
-    }
-    else {
-      //backend validation errors
-      if (response.data.errors && typeof response.data.errors === "object") {
-        const allErrors = Object.values(response.data.errors).flat() as string[]
-        setErrorMessage(allErrors[0] || "Doğrulama Hatası")
-      }
-      else {
-        setErrorMessage(response.data.message)
-      }
-
-      setIsError(true)
+    } finally {
+      setIsSubmitting(false)
     }
   }
+
   return (
     <>
       <div className="flex justify-center items-center align-middle h-screen">
@@ -98,7 +101,7 @@ export default function Signup() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form>
+            <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
               <div className="flex flex-col gap-4">
                 <div className="grid gap-2">
                   <Label htmlFor="email">E-posta</Label>
@@ -108,6 +111,7 @@ export default function Signup() {
                     required
                     value={email}
                     onChange={(e) => (setEmail(e.target.value))}
+                    disabled={isSubmitting}
                   />
                 </div>
                 <div className="grid gap-2">
@@ -115,14 +119,20 @@ export default function Signup() {
                     <Label htmlFor="password">Şifre</Label>
                   </div>
                   <Input id="password" type="password" required
-                    value={password} onChange={(e) => (setPassword(e.target.value))} />
+                    value={password}
+                    onChange={(e) => (setPassword(e.target.value))}
+                    disabled={isSubmitting}
+                  />
                 </div>
                 <div className="grid gap-2">
                   <div className="flex items-center">
                     <Label htmlFor="confirmPassword">Şifreyi Onayla</Label>
                   </div>
                   <Input id="confirmPassword" type="password" required
-                    value={confirmPassword} onChange={(e) => (setConfirmPassword(e.target.value))} />
+                    value={confirmPassword}
+                    onChange={(e) => (setConfirmPassword(e.target.value))}
+                    disabled={isSubmitting}
+                  />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="nickname">Kullanıcı Adı</Label>
@@ -132,6 +142,7 @@ export default function Signup() {
                     required
                     value={nickname}
                     onChange={(e) => (setNickname(e.target.value))}
+                    disabled={isSubmitting}
                   />
                 </div>
               </div>
@@ -141,8 +152,14 @@ export default function Signup() {
             {isError ? <p className="text-red-500">{errorMessage}</p> : <p className="text-green-500">{errorMessage}</p>}
           </CardFooter>
           <CardFooter className="flex-col gap-2">
-            <Button type="submit" onClick={handleSubmit} className="w-full">
-              Kayıt Ol
+            <Button
+              type="submit"
+              onClick={handleSubmit}
+              className="w-full disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isSubmitting}
+            >
+              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isSubmitting ? "Kayıt olunuyor..." : "Kayıt Ol"}
             </Button>
           </CardFooter>
           <CardFooter className="flex justify-center">

@@ -12,6 +12,7 @@ import {
 import { Button } from "../components/ui/button"
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
+import { Loader2 } from "lucide-react"
 
 export default function ForgotPassword() {
   const navigate = useNavigate()
@@ -20,12 +21,12 @@ export default function ForgotPassword() {
   const [isError, setIsError] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsLoading(true)
+    if (isLoading) return
+    setMessage("")
     setIsError(false)
-    setMessage("Gönderiliyor...")
-
+    setIsLoading(true)
     try {
       const res = await authService.forgotPassword(email)
       if (res && res.status >= 200 && res.status < 300) {
@@ -53,7 +54,7 @@ export default function ForgotPassword() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={onSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid gap-2">
               <Label htmlFor="email">E-posta</Label>
               <Input
@@ -73,7 +74,8 @@ export default function ForgotPassword() {
             </CardFooter>
 
             <CardFooter className="flex w-full flex-col gap-2 px-0">
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" className="w-full disabled:opacity-50 disabled:cursor-not-allowed" disabled={isLoading}>
+                {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 {isLoading ? "Gönderiliyor..." : "Bağlantı Gönder"}
               </Button>
               <Button
@@ -81,6 +83,7 @@ export default function ForgotPassword() {
                 variant="link"
                 onClick={() => navigate("/login")}
                 className="w-full"
+                disabled={isLoading}
               >
                 Girişe dön
               </Button>
