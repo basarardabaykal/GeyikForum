@@ -78,8 +78,8 @@ export default function Homepage() {
     }
 
     const newPostVote: PostVote = {
-      id: "00000000-0000-0000-0000-000000000000",
-      userId: user?.id || "00000000-0000-0000-0000-000000000000",
+      id: ZERO_GUID,
+      userId: user?.id || ZERO_GUID,
       postId: postId,
       voteValue: newVote,
     }
@@ -102,8 +102,8 @@ export default function Homepage() {
     }
 
     const newPost: Post = {
-      id: "00000000-0000-0000-0000-000000000000",
-      userId: user?.id || "00000000-0000-0000-0000-000000000000",
+      id: ZERO_GUID,
+      userId: user?.id || ZERO_GUID,
       parentId: parentId || null,
       depth: depth,
       title: title,
