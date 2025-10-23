@@ -16,6 +16,7 @@ interface AuthContextType {
   login: (token: string) => void;
   logout: () => void;
   isAdmin: () => boolean;
+  authReady: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,52 +24,52 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
   const navigate = useNavigate()
 
 
   const fetchUser = async () => {
+    setAuthReady(false);
     const token = localStorage.getItem("token")
-    if (token) {
-      try {
-        const decoded: DecodedToken = jwtDecode(token)
-
-        if (decoded.exp * 1000 < Date.now()) {
-          logout()
-          return
-        }
-
-        const response = await authService.getCurrentUser()
-
-        if (!response) {
-          logout();
-          return
-        }
-
-        if (!response.data.success) {
-          //toast.error(response.data.message)
-          logout()
-          return
-        }
-
-        const userData = response.data.data
-
-        const user: User = {
-          id: userData.id,
-          email: userData.email,
-          nickname: userData.nickname,
-          karma: userData.karma,
-          isAdmin: userData.isAdmin,
-          isModerator: userData.isModerator,
-          isBanned: userData.isBanned,
-          roles: userData.roles,
-        };
-
-        setUser(user)
-        setIsAuthenticated(true)
-      } catch (error) {
+    if (!token) {
+      setUser(null);
+      setIsAuthenticated(false);
+      setAuthReady(true);
+      return
+    }
+    try {
+      const decoded: DecodedToken = jwtDecode(token)
+      if (decoded.exp * 1000 < Date.now()) {
         logout()
+        setAuthReady(true)
         return
       }
+
+      const response = await authService.getCurrentUser()
+      if (!response || !response.data?.success) {
+        logout()
+        setAuthReady(true)
+        return
+      }
+
+      const userData = response.data.data
+      const user: User = {
+        id: userData.id,
+        email: userData.email,
+        nickname: userData.nickname,
+        karma: userData.karma,
+        isAdmin: userData.isAdmin,
+        isModerator: userData.isModerator,
+        isBanned: userData.isBanned,
+        roles: userData.roles,
+      };
+
+      setUser(user)
+      setIsAuthenticated(true)
+    } catch (error) {
+      logout()
+    } finally {
+      setAuthReady(true)
     }
   }
 
@@ -92,7 +93,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout, isAdmin }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, login, logout, isAdmin, authReady }}>
       {children}
     </AuthContext.Provider>
   );
