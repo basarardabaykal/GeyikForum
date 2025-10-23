@@ -10,24 +10,30 @@ import VerifyEmail from './pages/VerifyEmail'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
 import { useEffect } from 'react'
+import ProtectedRoute from "@/routes/ProtectedRoute"
 
 function App() {
-
   return (
     <>
       <Toaster position="top-right" />
       <Navbar></Navbar>
       <div>
         <Routes>
-          <Route path="/" element={<Homepage></Homepage>}></Route>
-          <Route path="/signup" element={<Signup></Signup>}></Route>
-          <Route path="/login" element={<Login></Login>}></Route>
-          <Route path="/forgot-password" element={<ForgotPassword />}></Route>
-          <Route path="/reset-password" element={<ResetPassword />}></Route>
-          <Route path="/profile" element={
-            <Profile />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/" element={
+            <ProtectedRoute>
+              <Homepage />
+            </ProtectedRoute>
           } />
-          <Route path="/verify-email" element={<VerifyEmail></VerifyEmail>}></Route>
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          } />
         </Routes>
       </div>
     </>

@@ -9,7 +9,7 @@ import {
 import { Button } from "../components/ui/button"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "@/context/AuthContext"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { authService } from "../services/authService"
 
 export default function Profile() {
@@ -18,10 +18,6 @@ export default function Profile() {
   const [message, setMessage] = useState<string>("")
   const [isError, setIsError] = useState<boolean>(false)
   const [isSending, setIsSending] = useState<boolean>(false)
-
-  useEffect(() => {
-    if (!user) navigate("/login")
-  }, [user, navigate])
 
   const handleSendResetEmail = async () => {
     if (!user?.email) {
@@ -44,8 +40,6 @@ export default function Profile() {
     setIsSending(false)
   }
 
-  if (!user) return null
-
   return (
     <div className="flex h-screen items-center justify-center">
       <Card className="m-auto w-3/4 max-w-xl">
@@ -58,11 +52,11 @@ export default function Profile() {
           <div className="grid gap-3">
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">Kullanıcı Adı</span>
-              <span className="font-medium">{user.nickname}</span>
+              <span className="font-medium">{user?.nickname}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-muted-foreground">E-posta</span>
-              <span className="font-medium">{user.email}</span>
+              <span className="font-medium">{user?.email}</span>
             </div>
           </div>
 

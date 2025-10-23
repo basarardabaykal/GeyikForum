@@ -26,9 +26,6 @@ export default function Homepage() {
   const isAdmin = !!(user?.isAdmin || (user?.roles || []).includes("Admin"));
 
   const fetchUsers = async () => {
-    if (!isAuthenticated) {
-      navigate("/login")
-    }
     const response = await userService.getAll()
     if (response?.data.success) {
       const mappedUsers: User[] = response.data.data
@@ -37,9 +34,6 @@ export default function Homepage() {
   }
 
   const fetchPostVotes = async (): Promise<void> => {
-    if (!isAuthenticated) {
-      navigate("/login")
-    }
     const response = await postVoteService.getAll()
     if (response?.data.success) {
       const mappedPostVotes: PostVote[] = response.data.data
@@ -48,9 +42,6 @@ export default function Homepage() {
   }
 
   const fetchPosts = async (): Promise<void> => {
-    if (!isAuthenticated) {
-      navigate("/login")
-    }
     const response = await postService.getAll()
     if (response?.data.success) {
       const mappedPosts: Post[] = response.data.data
@@ -74,9 +65,7 @@ export default function Homepage() {
   }
 
   const handleVote = async (postId: string, newVote: number): Promise<void> => {
-    if (!isAuthenticated) {
-      navigate("/login")
-    }
+
 
     const newPostVote: PostVote = {
       id: ZERO_GUID,
@@ -98,9 +87,6 @@ export default function Homepage() {
 
 
   const handleCreatePost = async (parentId: string, depth: number, title: string, content: string): Promise<void> => {
-    if (!isAuthenticated) {
-      navigate("/login")
-    }
 
     const newPost: Post = {
       id: ZERO_GUID,
@@ -120,10 +106,6 @@ export default function Homepage() {
   }
 
   const handleTogglePin = async (postId: string, current: boolean) => {
-    if (!isAuthenticated) {
-      navigate("/login");
-      return;
-    }
     const response = await postService.setPinStatus(postId, !current, user?.id || ZERO_GUID);
     if (response?.data?.success) {
       const updated = response.data.data as Post;
@@ -132,10 +114,6 @@ export default function Homepage() {
   };
 
   const handleToggleDelete = async (postId: string, current: boolean) => {
-    if (!isAuthenticated) {
-      navigate("/login");
-      return;
-    }
     const response = await postService.setDeleteStatus(postId, !current, user?.id || ZERO_GUID);
     if (response?.data?.success) {
       const updated = response.data.data as Post;
@@ -144,12 +122,6 @@ export default function Homepage() {
   };
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login")
-      toast.error("İçerikleri görebilmek için giriş yapın.")
-      return
-    }
-
     const fetchData = async () => {
       try {
         await Promise.all([fetchUsers(), fetchPostVotes(), fetchPosts()])
