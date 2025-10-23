@@ -11,6 +11,7 @@ import PostCreator from "@/components/PostCreator"
 import { MessageCircle } from "lucide-react"
 import { userService } from "../services/userService"
 import type { PostVote } from "../models/PostVote"
+import { Card, CardContent } from "@/components/ui/card"
 
 
 export default function Homepage() {
@@ -173,33 +174,29 @@ export default function Homepage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading posts...</p>
-        </div>
+      <div className="min-h-screen bg-background">
+        <main className="max-w-4xl mx-auto px-4 py-6">
+          <Card>
+            <CardContent className="py-8 text-center text-muted-foreground">
+              Yükleniyor...
+            </CardContent>
+          </Card>
+        </main>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-3">
-          <h1 className="text-xl font-bold text-gray-900">Discussion Forum</h1>
-        </div>
-      </header>
-
-      <PostCreator isOpen={true} parentId="" depth={0} onSubmit={handleCreatePost}></PostCreator>
-
+    <div className="min-h-screen bg-background">
       <main className="max-w-4xl mx-auto px-4 py-6">
         {mainPosts.length === 0 ? (
-          <div className="text-center py-12">
-            <MessageCircle size={48} className="mx-auto text-gray-400 mb-4" />
-            <p className="text-gray-600">No posts yet. Be the first to start a discussion!</p>
-          </div>
+          <Card>
+            <CardContent className="py-10 text-center text-muted-foreground">
+              Henüz gönderi yok.
+            </CardContent>
+          </Card>
         ) : (
-          <div className="space-y-0">
+          <div className="space-y-4">
             {mainPosts.map(post => (
               <PostItem
                 key={post.id}

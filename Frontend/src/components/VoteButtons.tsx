@@ -39,7 +39,7 @@ export default function VoteButtons({ score, userVote, onVote }: VoteButtonsProp
         <ChevronUp size={20} />
       </button>
       <span className={`font-medium text-sm ${currentVote === 1 ? 'text-orange-500' :
-        currentVote === -1 ? 'text-purple-500' : 'text-gray-700'
+        currentVote === -1 ? 'text-purple-500' : 'text-gray-700 dark:text-gray-300'
         }`}>
         {score}
       </span>
