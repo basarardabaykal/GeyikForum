@@ -5,34 +5,48 @@ interface PostCreatorProps {
   parentId: string;
   depth: number;
   onSubmit: (parentId: string, depth: number, title: string, content: string) => void;
+  onClose?: () => void;
 }
 
-export default function PostCreator({ isOpen, parentId, depth, onSubmit }: PostCreatorProps) {
+export default function PostCreator({ isOpen, parentId, depth, onSubmit, onClose }: PostCreatorProps) {
   const isMainPost = parentId === null || parentId === "";
   const [title, setTitle] = useState<string>("")
   const [content, setContent] = useState<string>("")
 
   if (!isOpen) {
-    return
+    return null
   }
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-sm font-medium text-gray-900">{isMainPost ? "Create a new post" : "Reply"}</h3>
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-sm text-gray-500 hover:text-gray-700"
+          >
+            Close
+          </button>
+        )}
+      </div>
 
       <div className="space-y-4">
-        <div>
-          <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-            Title
-          </label>
-          <input
-            type="text"
-            id="title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            placeholder="Enter your post title..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-        </div>
+        {isMainPost && (
+          <div>
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
+              Title
+            </label>
+            <input
+              type="text"
+              id="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Enter your post title..."
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+        )}
 
         <div>
           <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
@@ -51,7 +65,7 @@ export default function PostCreator({ isOpen, parentId, depth, onSubmit }: PostC
         <div className="flex items-center justify-between pt-4">
           <button
             type="button"
-            disabled={!title.trim() || !content.trim()}
+            disabled={!content.trim() || (isMainPost && !title.trim())}
             onClick={() => onSubmit(parentId, depth, title, content)}
             className="px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
           >

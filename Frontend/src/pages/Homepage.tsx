@@ -24,6 +24,7 @@ export default function Homepage() {
   const [page, setPage] = useState<number>(1)
   const [hasMore, setHasMore] = useState<boolean>(true)
   const [loadingMore, setLoadingMore] = useState<boolean>(false)
+  const [showMainCreator, setShowMainCreator] = useState<boolean>(false)
 
   const ZERO_GUID = "00000000-0000-0000-0000-000000000000";
   const isAdmin = !!(user?.isAdmin || (user?.roles || []).includes("Admin"));
@@ -187,6 +188,27 @@ export default function Homepage() {
   return (
     <div className="min-h-screen bg-background">
       <main className="max-w-4xl mx-auto px-4 py-6">
+        <div className="mb-4 flex justify-end">
+          {!showMainCreator && (
+            <button
+              onClick={() => setShowMainCreator(true)}
+              className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
+            >
+              Create Post
+            </button>
+          )}
+        </div>
+
+        <div className="mb-4">
+          <PostCreator
+            isOpen={showMainCreator}
+            parentId={""}
+            depth={0}
+            onSubmit={handleCreatePost}
+            onClose={() => setShowMainCreator(false)}
+          />
+        </div>
+
         {mainPosts.length === 0 ? (
           <Card>
             <CardContent className="py-10 text-center text-muted-foreground">
