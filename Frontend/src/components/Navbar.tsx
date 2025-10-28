@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext"
 import { useTheme } from "../context/ThemeContext"
 import { FloatingDock } from "./ui/floating-dock"
 import { IconHome, IconUser, IconLogin2, IconLogout2, IconBrightnessDownFilled, IconBrightnessDown } from "@tabler/icons-react";
+import logo from "../../public/logo.svg"
 
 
 export default function Navbar() {
@@ -28,7 +29,7 @@ export default function Navbar() {
 
   return (
     <>
-      <div className="fixed right-40 -translate-x-1/2 bottom-1/3 z-50">
+      <div className="fixed right-40 -translate-x-1/2 bottom-1/4 z-50">
         <FloatingDock
           items={[
             {
@@ -78,6 +79,13 @@ export default function Navbar() {
                   toggleDarkMode()
                 }
               },
+            {
+              title: "Harget",
+              icon: <img src={logo} alt="" />,
+              onClick: () => {
+                navigate("/harget.com.tr")
+              }
+            },
 
           ]}
         ></FloatingDock >
