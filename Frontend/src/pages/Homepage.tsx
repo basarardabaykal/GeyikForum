@@ -159,7 +159,15 @@ export default function Homepage() {
     fetchData()
   }, [])
 
-  const mainPosts: Post[] = posts.filter(post => post.parentId === null)
+  // Build parent list and float pinned to the top (no backend change)
+  const mainPosts = posts.filter(p => p.parentId === null)
+  const mainPostsSorted = [...mainPosts].sort((a, b) => {
+    const pinDelta = Number(b.isPinned) - Number(a.isPinned)
+    if (pinDelta !== 0) return pinDelta
+    const aTime = a.createdAt ? Date.parse(a.createdAt) : 0
+    const bTime = b.createdAt ? Date.parse(b.createdAt) : 0
+    return bTime - aTime
+  })
 
   const handleLoadMore = async (): Promise<void> => {
     if (!hasMore || loadingMore) return
@@ -186,7 +194,7 @@ export default function Homepage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <main className="max-w-4xl mx-auto px-4 py-6">
         <div className="mb-4 flex justify-end">
           {!showMainCreator && (
@@ -209,7 +217,7 @@ export default function Homepage() {
           />
         </div>
 
-        {mainPosts.length === 0 ? (
+        {mainPostsSorted.length === 0 ? (
           <Card>
             <CardContent className="py-10 text-center text-muted-foreground">
               Henüz gönderi yok.
@@ -217,7 +225,7 @@ export default function Homepage() {
           </Card>
         ) : (
           <div className="space-y-4">
-            {mainPosts.map(post => (
+            {mainPostsSorted.map(post => (
               <PostItem
                 key={post.id}
                 post={post}
