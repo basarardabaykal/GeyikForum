@@ -83,7 +83,7 @@ export default function Navbar() {
               title: "Harget",
               icon: <img src={logo} alt="" />,
               onClick: () => {
-                navigate("/harget.com.tr")
+                window.open("https://harget.com.tr", "_blank")
               }
             },
 

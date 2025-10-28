@@ -33,12 +33,12 @@ export default function PostItem({ post, posts, onVote, getUserNickname, getUser
   const HeaderMeta = (
     <div className="flex items-center gap-2 text-sm text-muted-foreground">
       {post.isPinned && <Pin size={16} className="text-green-600" />}
-      <span>u/{getUserNickname(post.userId)}</span>
+      <span>{getUserNickname(post.userId)}</span>
       {createdAtText && <span>• {createdAtText}</span>}
       {post.isEdited && (
         <span className="flex items-center gap-1 text-xs text-muted-foreground">
           <Edit size={12} />
-          edited
+          değiştirilmiş
         </span>
       )}
     </div>
@@ -50,7 +50,7 @@ export default function PostItem({ post, posts, onVote, getUserNickname, getUser
         className="flex items-center gap-1 hover:text-foreground"
         onClick={() => { setShowReplyCreator(!showReplyCreator) }}
       >
-        <MessageCircle size={16} />Reply
+        <MessageCircle size={16} />Yanıtla
       </button>
 
       {/* Admin actions */}
@@ -95,7 +95,7 @@ export default function PostItem({ post, posts, onVote, getUserNickname, getUser
         <CardHeader className="pb-2">
           {HeaderMeta}
           {post.title && (
-            <CardTitle className="text-lg">{post.title}</CardTitle>
+            <CardTitle className="text-lg mt-4">{post.title}</CardTitle>
           )}
         </CardHeader>
 
