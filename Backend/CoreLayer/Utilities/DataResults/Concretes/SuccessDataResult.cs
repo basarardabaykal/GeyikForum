@@ -10,6 +10,6 @@ public class SuccessDataResult<T> : DataResult<T>
   public SuccessDataResult(string message)
     : base(true, 200, message, default(T)) { }
   public SuccessDataResult()
-    : base(true, 200, "Operation successfully completed.", default(T)) { }
+    : base(true, 200, "İşlem başarıyla tamamlandı.", default(T)) { }
   
 }
