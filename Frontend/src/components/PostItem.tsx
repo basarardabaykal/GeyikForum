@@ -142,7 +142,7 @@ export default function PostItem({ post, posts, onVote, getUserNickname, getUser
   return (
     <div
       className="rounded-md border bg-card text-card-foreground shadow-sm p-4 mt-2"
-      style={{ marginLeft }}
+      style={{ marginLeft: `clamp(0px, ${marginLeft}px, 24px)` }}
     >
       <div className="flex gap-4">
         <VoteButtons
@@ -153,31 +153,14 @@ export default function PostItem({ post, posts, onVote, getUserNickname, getUser
         <div className="flex-1">
           <div className="mb-2">{HeaderMeta}</div>
           {post.title && (
-            <h4 className="font-semibold text-base text-foreground mb-2">{post.title}</h4>
+            <h4 className="font-semibold text-base text-foreground mb-2 break-words">{post.title}</h4>
           )}
-          <p className="text-foreground/90 mb-3 leading-relaxed">
+          <p className="text-foreground/90 mb-3 leading-relaxed break-words whitespace-pre-wrap">
             {post.isDeleted ? "[deleted]" : post.content}
           </p>
           {Actions}
         </div>
       </div>
-
-      <PostCreator isOpen={showReplyCreator} parentId={post.id} depth={post.depth} onSubmit={onSubmitReply} />
-
-      {replies.map(reply => (
-        <PostItem
-          key={reply.id}
-          post={reply}
-          posts={posts}
-          onVote={onVote}
-          getUserNickname={getUserNickname}
-          getUserVoteForPost={getUserVoteForPost}
-          onSubmitReply={onSubmitReply}
-          isAdmin={isAdmin}
-          onTogglePin={onTogglePin}
-          onToggleDelete={onToggleDelete}
-        />
-      ))}
     </div>
   )
 }

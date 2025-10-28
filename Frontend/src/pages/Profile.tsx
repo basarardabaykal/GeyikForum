@@ -41,7 +41,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex min-h-[100svh] items-center justify-center">
       <Card className="m-auto w-3/4 max-w-xl">
         <CardHeader>
           <CardTitle>Profil</CardTitle>
@@ -50,18 +50,36 @@ export default function Profile() {
 
         <CardContent>
           <div className="grid gap-3">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Kullanıcı Adı</span>
-              <span className="font-medium">{user?.nickname}</span>
+            <div className="flex items-center justify-between min-w-0 gap-2">
+              <span className="text-sm text-muted-foreground shrink-0">Kullanıcı Adı</span>
+              <span
+                className="
+                  font-medium text-right
+                  min-w-0 max-w-[65%] sm:max-w-none
+                  overflow-hidden text-ellipsis whitespace-nowrap sm:whitespace-normal
+                  break-all sm:break-words
+                "
+              >
+                {user?.nickname}
+              </span>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">E-posta</span>
-              <span className="font-medium">{user?.email}</span>
+            <div className="flex items-center justify-between min-w-0 gap-2">
+              <span className="text-sm text-muted-foreground shrink-0">E-posta</span>
+              <span
+                className="
+                  font-medium text-right
+                  min-w-0 max-w-[65%] sm:max-w-none
+                  overflow-hidden text-ellipsis whitespace-nowrap sm:whitespace-normal
+                  break-all sm:break-words
+                "
+              >
+                {user?.email}
+              </span>
             </div>
           </div>
 
           {message && (
-            <p className={`mt-4 text-sm ${isError ? "text-red-500" : "text-green-600"}`}>
+            <p className={`mt-4 text-sm ${isError ? "text-red-500" : "text-green-600"} break-words`}>
               {message}
             </p>
           )}
