@@ -1,4 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { X } from "lucide-react";
 
 interface PostCreatorProps {
   isOpen: boolean,
@@ -9,70 +15,71 @@ interface PostCreatorProps {
 }
 
 export default function PostCreator({ isOpen, parentId, depth, onSubmit, onClose }: PostCreatorProps) {
-  const isMainPost = parentId === null || parentId === "";
-  const [title, setTitle] = useState<string>("")
-  const [content, setContent] = useState<string>("")
+  const isMainPost = !parentId;
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
 
-  if (!isOpen) {
-    return null
-  }
+  if (!isOpen) return null;
+
+  const canSubmit = content.trim().length > 0 && (!isMainPost || title.trim().length > 0);
+
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-medium text-gray-900">{isMainPost ? "Create a new post" : "Reply"}</h3>
-        {onClose && (
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-sm text-gray-500 hover:text-gray-700"
-          >
-            Close
-          </button>
-        )}
-      </div>
+    <Card className="max-w-2xl mx-auto">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base">
+            {isMainPost ? "Yeni bir gönderi oluştur" : "Yanıtla"}
+          </CardTitle>
+          {onClose && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={onClose}
+              className="h-8 px-2 text-gray-600 hover:text-gray-900"
+            >
+              <X className="h-4 w-4" />
+              <span className="sr-only">Kapat</span>
+            </Button>
+          )}
+        </div>
+      </CardHeader>
 
-      <div className="space-y-4">
+      <CardContent className="space-y-4">
         {isMainPost && (
-          <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
-              Title
-            </label>
-            <input
-              type="text"
+          <div className="grid gap-2">
+            <Label htmlFor="title">Başlık</Label>
+            <Input
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="Enter your post title..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Gönderi başlığını girin..."
             />
           </div>
         )}
 
-        <div>
-          <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">
-            Content
-          </label>
-          <textarea
+        <div className="grid gap-2">
+          <Label htmlFor="content">İçerik</Label>
+          <Textarea
             id="content"
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            placeholder="What's on your mind?"
+            placeholder="Aklınızda ne var?"
             rows={8}
-            className="h-12 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
+            className="resize-vertical"
           />
         </div>
+      </CardContent>
 
-        <div className="flex items-center justify-between pt-4">
-          <button
-            type="button"
-            disabled={!content.trim() || (isMainPost && !title.trim())}
-            onClick={() => onSubmit(parentId, depth, title, content)}
-            className="px-6 py-2 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
-          >
-            Create Post
-          </button>
-        </div>
-      </div>
-    </div>
-  )
+      <CardFooter className="flex justify-end">
+        <Button
+          type="button"
+          disabled={!canSubmit}
+          onClick={() => onSubmit(parentId, depth, title, content)}
+        >
+          Gönderi oluştur
+        </Button>
+      </CardFooter>
+    </Card>
+  );
 }
