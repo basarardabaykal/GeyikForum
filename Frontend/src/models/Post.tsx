@@ -10,4 +10,5 @@ export interface Post {
     isPinned: boolean;
     isEdited: boolean;
     isDeleted: boolean;
+    createdAt?: string
 }

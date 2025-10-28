@@ -13,4 +13,5 @@ public class PostDto
   public bool IsPinned { get; set; }
   public bool IsEdited { get; set; }
   public bool IsDeleted { get; set; }
+  public DateTime CreatedAt { get; set; }
 }

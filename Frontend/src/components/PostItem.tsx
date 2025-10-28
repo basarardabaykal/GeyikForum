@@ -28,10 +28,13 @@ export default function PostItem({ post, posts, onVote, getUserNickname, getUser
 
   const [showReplyCreator, setShowReplyCreator] = useState<boolean>(false)
 
+  const createdAtText = post.createdAt ? new Date(post.createdAt).toLocaleString() : null
+
   const HeaderMeta = (
     <div className="flex items-center gap-2 text-sm text-muted-foreground">
       {post.isPinned && <Pin size={16} className="text-green-600" />}
       <span>u/{getUserNickname(post.userId)}</span>
+      {createdAtText && <span>• {createdAtText}</span>}
       {post.isEdited && (
         <span className="flex items-center gap-1 text-xs text-muted-foreground">
           <Edit size={12} />
