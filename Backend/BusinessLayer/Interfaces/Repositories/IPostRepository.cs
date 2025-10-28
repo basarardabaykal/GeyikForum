@@ -10,4 +10,6 @@ public interface IPostRepository : IGenericRepository<Post>
 
   public Task<IDataResult<Post>> SetPinStatus(Guid postId, bool isPinned);
   public Task<IDataResult<Post>> SetDeleteStatus(Guid postId, bool isDeleted);
+
+  public Task<IDataResult<List<Post>>> GetParentsWithRepliesPaged(int page, int pageSize);
 }

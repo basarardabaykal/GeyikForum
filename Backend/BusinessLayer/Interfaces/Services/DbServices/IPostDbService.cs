@@ -11,4 +11,6 @@ public interface IPostDbService : IGenericDbService<PostDto>
 
   public Task<IDataResult<PostDto>> SetPinStatus(Guid postId, bool isPinned);
   public Task<IDataResult<PostDto>> SetDeleteStatus(Guid postId, bool isDeleted);
+
+  public Task<IDataResult<List<PostDto>>> GetPage(int page, int pageSize);
 }

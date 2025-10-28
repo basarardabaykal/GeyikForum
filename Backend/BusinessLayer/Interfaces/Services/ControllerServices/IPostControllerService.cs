@@ -10,4 +10,6 @@ public interface IPostControllerService :  IGenericControllerService<PostDto>
 
   public Task<IDataResult<PostDto>> SetPinStatus(PostPinRequestDto dto);
   public Task<IDataResult<PostDto>> SetDeleteStatus(PostDeleteRequestDto dto);
+
+  public Task<IDataResult<List<PostDto>>> GetPage(int page, int pageSize);
 }

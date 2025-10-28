@@ -5,6 +5,7 @@ using CoreLayer.Utilities.DataResults.Interfaces;
 using DataLayer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using CoreLayer.Utilities.DataResults.Concretes;
 
 namespace BusinessLayer.Repositories;
 
@@ -58,5 +59,35 @@ public class PostRepository : GenericRepository<Post>,  IPostRepository
     await _dbContext.SaveChangesAsync();
 
     return new SuccessDataResult<Post>(isDeleted ? "Gönderi silindi." : "Gönderi tekrar açıldı.", post);
+  }
+
+  public async Task<IDataResult<List<Post>>> GetParentsWithRepliesPaged(int page, int pageSize)
+  {
+    if (page < 1) page = 1;
+    if (pageSize < 1) pageSize = 10;
+
+    var parents = await _dbSet.AsNoTracking()
+      .Where(p => p.ParentId == null && !p.IsDeleted)
+      .OrderByDescending(p => p.CreatedAt)
+      .Skip((page - 1) * pageSize)
+      .Take(pageSize)
+      .ToListAsync();
+
+    var result = new List<Post>(parents);
+    var frontier = parents.Select(p => p.Id).ToList();
+
+    while (frontier.Count > 0)
+    {
+      var children = await _dbSet.AsNoTracking()
+        .Where(p => p.ParentId != null && frontier.Contains(p.ParentId.Value) && !p.IsDeleted)
+        .ToListAsync();
+
+      if (children.Count == 0) break;
+
+      result.AddRange(children);
+      frontier = children.Select(c => c.Id).ToList();
+    }
+
+    return new SuccessDataResult<List<Post>>("Gönderiler getirildi.", result);
   }
 }

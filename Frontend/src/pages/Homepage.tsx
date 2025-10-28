@@ -21,6 +21,9 @@ export default function Homepage() {
   const [users, setUsers] = useState<User[]>([])
   const [postVotes, setPostVotes] = useState<PostVote[]>([])
   const [loading, setLoading] = useState<boolean>(true)
+  const [page, setPage] = useState<number>(1)
+  const [hasMore, setHasMore] = useState<boolean>(true)
+  const [loadingMore, setLoadingMore] = useState<boolean>(false)
 
   const ZERO_GUID = "00000000-0000-0000-0000-000000000000";
   const isAdmin = !!(user?.isAdmin || (user?.roles || []).includes("Admin"));
@@ -46,6 +49,26 @@ export default function Homepage() {
     if (response?.data.success) {
       const mappedPosts: Post[] = response.data.data
       setPosts(mappedPosts)
+    }
+  }
+
+  const fetchPage = async (pageToFetch: number): Promise<void> => {
+    const response = await postService.getPage(pageToFetch, 10)
+    if (response?.data?.success) {
+      const newPosts = response.data.data as Post[];
+      setPosts(prev => {
+        const seen = new Set(prev.map(p => p.id))
+        const merged = [...prev]
+        for (const p of newPosts) {
+          if (!seen.has(p.id)) {
+            merged.push(p)
+            seen.add(p.id)
+          }
+        }
+        return merged
+      })
+      setHasMore((newPosts.filter(p => p.parentId === null).length) === 10)
+      setPage(pageToFetch)
     }
   }
 
@@ -124,7 +147,7 @@ export default function Homepage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        await Promise.all([fetchUsers(), fetchPostVotes(), fetchPosts()])
+        await Promise.all([fetchUsers(), fetchPostVotes(), fetchPage(1)])
       } catch (error) {
         toast.error("Veri aktarımında bir hatayla karşılaşıldı.")
       } finally {
@@ -135,14 +158,17 @@ export default function Homepage() {
     fetchData()
   }, [])
 
-  const mainPosts: Post[] = posts
-    .filter(post => post.parentId === null)
-    .sort((a, b) => {
-      // Pinned post logic might change later if I decide to GET posts by small amounts.
-      if (a.isPinned && !b.isPinned) return -1
-      if (!a.isPinned && b.isPinned) return 1
-      return b.voteScore - a.voteScore
-    })
+  const mainPosts: Post[] = posts.filter(post => post.parentId === null)
+
+  const handleLoadMore = async (): Promise<void> => {
+    if (!hasMore || loadingMore) return
+    try {
+      setLoadingMore(true)
+      await fetchPage(page + 1)
+    } finally {
+      setLoadingMore(false)
+    }
+  }
 
   if (loading) {
     return (
@@ -183,6 +209,19 @@ export default function Homepage() {
                 onToggleDelete={handleToggleDelete}
               />
             ))}
+            <div className="flex justify-center pt-2">
+              {hasMore ? (
+                <button
+                  onClick={handleLoadMore}
+                  disabled={loadingMore}
+                  className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-60"
+                >
+                  {loadingMore ? "Yükleniyor..." : "Daha fazla yükle"}
+                </button>
+              ) : (
+                <div className="text-sm text-muted-foreground py-2">Hepsi yüklendi.</div>
+              )}
+            </div>
           </div>
         )}
       </main>

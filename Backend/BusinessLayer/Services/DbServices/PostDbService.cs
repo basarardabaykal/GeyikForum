@@ -52,4 +52,16 @@ public class PostDbService : GenericDbService<PostDto, Post>, IPostDbService
     if (!updated.Success) return new ErrorDataResult<PostDto>(updated.StatusCode, updated.Message);
     return new SuccessDataResult<PostDto>(updated.Message, _mapper.Map<PostDto>(updated.Data));
   }
+
+  public async Task<IDataResult<List<PostDto>>> GetPage(int page, int pageSize)
+  {
+    var repoResult = await _repository.GetParentsWithRepliesPaged(page, pageSize);
+    if (!repoResult.Success)
+    {
+      return new ErrorDataResult<List<PostDto>>(repoResult.StatusCode, repoResult.Message);
+    }
+
+    var dtoList = _mapper.Map<List<PostDto>>(repoResult.Data);
+    return new SuccessDataResult<List<PostDto>>("Gönderiler getirildi.", dtoList);
+  }
 }

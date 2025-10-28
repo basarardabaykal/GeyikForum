@@ -26,6 +26,24 @@ export const postService = {
     }
   },
 
+  async getPage(page: number, pageSize: number = 10) {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await api.get(`/${CONTROLLER_NAME}/get-page`, {
+        params: { page, pageSize },
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (!response.data.success) {
+        toast.error(response.data.message);
+      }
+
+      return response;
+    } catch (error) {
+      toast.error("Bir hata ile karşılaşıldı.");
+    }
+  },
+
   async createPost(post: Post) {
     try {
       const token = localStorage.getItem("token")

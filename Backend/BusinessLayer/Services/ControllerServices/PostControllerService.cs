@@ -99,4 +99,9 @@ public class PostControllerService : GenericControllerService<PostDto>,  IPostCo
 
         return await _postDbService.SetDeleteStatus(dto.PostId, dto.IsDeleted);
     }
+
+    public async Task<IDataResult<List<PostDto>>> GetPage(int page, int pageSize)
+    {
+        return await _postDbService.GetPage(page,  pageSize);
+    }
 }

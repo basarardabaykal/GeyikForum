@@ -1,5 +1,7 @@
-using BusinessLayer.Interfaces.Services.ControllerServices;
+using System.Security.Claims;
 using BusinessLayer.Dtos;
+using BusinessLayer.Interfaces.Services.ControllerServices;
+using CoreLayer.Utilities.DataResults.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +23,14 @@ public class PostController : Controller
   public async Task<IActionResult> GetAll()
   {
     var result = await _postControllerService.GetAll();
+    return StatusCode(result.StatusCode, result);
+  }
+
+  [HttpGet("get-page")]
+  [Authorize]
+  public async Task<IActionResult> GetPage([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+  {
+    var result = await _postControllerService.GetPage(page, pageSize);
     return StatusCode(result.StatusCode, result);
   }
 
