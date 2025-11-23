@@ -21,7 +21,7 @@ public class PostValidator : AbstractValidator<PostDto>
   // Title is required for main posts.
   RuleFor(p => p.Title)
    .NotEmpty()
-   .When(p => p.ParentId.HasValue && p.ParentId != Guid.Empty)
+   .When(p => !(p.ParentId.HasValue && p.ParentId != Guid.Empty))
    .WithMessage("Title is required.");
  }
 }
