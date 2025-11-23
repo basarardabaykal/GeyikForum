@@ -118,10 +118,12 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.UseForwardedHeaders(new ForwardedHeadersOptions
+//Automatically apply migrations at the beginning
+using (var scope = app.Services.CreateScope())
 {
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-});
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate();
+}
 
 //global exception handler
 app.UseMiddleware <GlobalExceptionHandlerMiddleware>();
