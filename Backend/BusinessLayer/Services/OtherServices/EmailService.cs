@@ -20,6 +20,7 @@ public class EmailService :  IEmailService
   {
     using (var client = new SmtpClient(_configuration["Smtp:Host"], int.Parse(_configuration["Smtp:Port"])))
     {
+      client.UseDefaultCredentials = false;
       client.Credentials = new NetworkCredential(_configuration["Smtp:Username"], _configuration["Smtp:Password"]);
       client.EnableSsl = true;
 
