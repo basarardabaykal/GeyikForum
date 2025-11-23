@@ -10,7 +10,7 @@ interface PostCreatorProps {
   isOpen: boolean,
   parentId: string;
   depth: number;
-  onSubmit: (parentId: string, depth: number, title: string, content: string) => void;
+  onSubmit: (parentId: string, depth: number, title: string, content: string) => Promise<void>;
   onClose?: () => void;
 }
 
@@ -18,6 +18,7 @@ export default function PostCreator({ isOpen, parentId, depth, onSubmit, onClose
   const isMainPost = !parentId;
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   if (!isOpen) return null;
 
@@ -74,10 +75,21 @@ export default function PostCreator({ isOpen, parentId, depth, onSubmit, onClose
       <CardFooter className="flex justify-end">
         <Button
           type="button"
-          disabled={!canSubmit}
-          onClick={() => onSubmit(parentId, depth, title, content)}
+          disabled={!canSubmit || isSubmitting}
+          onClick={async () => {
+            if (isSubmitting) return;
+            setIsSubmitting(true);
+            try {
+              await onSubmit(parentId, depth, title.trim(), content.trim());
+              setTitle("");
+              setContent("");
+              if (onClose) onClose();
+            } finally {
+              setIsSubmitting(false);
+            }
+          }}
         >
-          Gönderi oluştur
+          {isSubmitting ? "Gönderiliyor..." : "Gönderi oluştur"}
         </Button>
       </CardFooter>
     </Card>
