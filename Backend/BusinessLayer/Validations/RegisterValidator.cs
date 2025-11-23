@@ -9,7 +9,9 @@ public class RegisterValidator : AbstractValidator<RegisterRequestDto>
   {
     RuleFor(x => x.Email)
       .NotEmpty().WithMessage("Email is required.")
-      .EmailAddress().WithMessage("Invalid email.");
+      .EmailAddress().WithMessage("Invalid email.")
+      .Must(email => email != null && email.EndsWith("@hacettepe.edu.tr", StringComparison.OrdinalIgnoreCase))
+      .WithMessage("Email must be a valid hacettepe.edu.tr address.");
 
     RuleFor(x => x.Password)
       .NotEmpty().WithMessage("Password is required.")
@@ -21,7 +23,7 @@ public class RegisterValidator : AbstractValidator<RegisterRequestDto>
       .Matches(@"[^A-Za-z0-9]").WithMessage("Password must contain at least one special character.");
 
     RuleFor(x => x.ConfirmPassword)
-      .Equal(x => x.Password).WithMessage("Passwords do not match:D");
+      .Equal(x => x.Password).WithMessage("Passwords do not match");
 
     RuleFor(x => x.Nickname)
       .NotEmpty().WithMessage("Nickname is required.")

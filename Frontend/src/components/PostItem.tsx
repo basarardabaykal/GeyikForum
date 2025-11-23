@@ -13,7 +13,7 @@ interface PostItemProps {
   onVote: (postId: string, newVote: number) => void;
   getUserNickname: (userId: string) => string;
   getUserVoteForPost: (postId: string) => number;
-  onSubmitReply: (parentId: string, depth: number, title: string, content: string) => void;
+  onSubmitReply: (parentId: string, depth: number, title: string, content: string) => Promise<void>;
   isAdmin?: boolean;
   onTogglePin?: (postId: string, current: boolean) => void;
   onToggleDelete?: (postId: string, current: boolean) => void;

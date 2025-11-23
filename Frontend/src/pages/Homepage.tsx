@@ -111,23 +111,41 @@ export default function Homepage() {
 
 
   const handleCreatePost = async (parentId: string, depth: number, title: string, content: string): Promise<void> => {
-
     const newPost: Post = {
       id: ZERO_GUID,
       userId: user?.id || ZERO_GUID,
       parentId: parentId || null,
-      depth: depth,
-      title: title,
-      content: content,
+      depth,
+      title: title || null,
+      content,
       voteScore: 0,
       commentCount: 0,
       isPinned: false,
       isEdited: false,
       isDeleted: false,
-    }
+    };
 
-    const response = await postService.createPost(newPost)
-  }
+    const response = await postService.createPost(newPost);
+
+    if (response?.data?.success) {
+      const created: Post = response.data.data || newPost;
+      setPosts(prev => {
+        const updated = [...prev, created];
+        if (created.parentId) {
+          return updated.map(p =>
+            p.id === created.parentId
+              ? { ...p, commentCount: p.commentCount + 1 }
+              : p
+          );
+        }
+        return updated;
+      });
+      if (!created.parentId) {
+        setShowMainCreator(false);
+      }
+      toast.success("Gönderi oluşturuldu.");
+    }
+  };
 
   const handleTogglePin = async (postId: string, current: boolean) => {
     const response = await postService.setPinStatus(postId, !current, user?.id || ZERO_GUID);
