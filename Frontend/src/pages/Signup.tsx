@@ -19,7 +19,11 @@ import { authService } from "../services/authService";
 import { Loader2 } from "lucide-react"
 
 const signupSchema = z.object({
-  email: z.email("Geçersiz e-posta"),
+  email: z.string()
+    .email("Geçersiz e-posta")
+    .refine((val) => val.toLowerCase().endsWith("@hacettepe.edu.tr"), {
+      message: "E-posta adresi hacettepe.edu.tr uzantılı olmalıdır.",
+    }),
   password: z.string()
     .min(6, "Şifre en az 6 karakter olmalıdır.")
     .max(64, "Şifre 64 karakterden fazla olamaz.")
